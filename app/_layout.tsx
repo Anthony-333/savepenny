@@ -1,14 +1,16 @@
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Slot, Stack } from "expo-router";
-
-// Import your global CSS file
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import "../global.css";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Slot />
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Slot />
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
