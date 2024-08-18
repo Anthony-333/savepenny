@@ -8,7 +8,7 @@ const blurhash =
 
 const HomeHeader = () => {
   return (
-    <View className="flex-row justify-between items-center m-5">
+    <View className="flex-row justify-between items-center m-5 ">
       <TouchableOpacity>
         <View className="bg-violet-400 pt-2 px-1 rounded-lg">
           <Image
