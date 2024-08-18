@@ -27,4 +27,4 @@ const Activity = ({ item }: Props) => {
   );
 };
 
-export default Activity;
+export default React.memo(Activity);

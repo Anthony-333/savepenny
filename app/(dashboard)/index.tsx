@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import HomeHeader from "../components/Home-header";
-import { data } from "../../assets/data/data";
+import { data, DataType } from "../../assets/data/data";
 import Card from "../components/Card";
 import Animated, {
   Extrapolation,
@@ -18,6 +18,15 @@ const index = () => {
   const [activityIndex, setActivityIndex] = useState(0);
   const animatedValue = useSharedValue(0);
   const MaxCards = 3;
+
+  const setCurrentIndexCallback = useCallback((index: number) => {
+    setCurrentIndex(index);
+  }, [setCurrentIndex]);
+  
+  const setNewDataCallback = useCallback((data: DataType[]) => {
+    setNewData(data);
+  }, [setNewData]);
+  
 
   const animatedStyle = useAnimatedStyle(() => {
     if (animatedValue.value > currentIndex + 0.5) {
