@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import HomeHeader from "../components/Home-header";
 import { data, DataType } from "../../assets/data/data";
 import Card from "../components/Card";
@@ -17,16 +17,11 @@ const index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
   const animatedValue = useSharedValue(0);
-  const MaxCards = 3;
+  const MAX = 3;
 
-  const setCurrentIndexCallback = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, [setCurrentIndex]);
-  
-  const setNewDataCallback = useCallback((data: DataType[]) => {
-    setNewData(data);
-  }, [setNewData]);
-  
+  useEffect(() => {
+    console.log(newData)
+  },[newData])
 
   const animatedStyle = useAnimatedStyle(() => {
     if (animatedValue.value > currentIndex + 0.5) {
@@ -34,39 +29,40 @@ const index = () => {
     } else {
       runOnJS(setActivityIndex)(currentIndex);
     }
-
     const opacity = interpolate(
       animatedValue.value,
       [currentIndex, currentIndex + 0.3, currentIndex + 0.8, currentIndex + 1],
       [1, 0, 0, 1],
       Extrapolation.CLAMP
     );
+
     return {
       opacity: opacity,
     };
   });
+
   return (
     <View className="flex-1 bg-white ">
       <HomeHeader />
       <View className="mx-5 flex-1">
         <View className="flex-1 justify-center items-center mt-[20] h-[200] ">
           {newData.map((item, index) => {
-            if (index > currentIndex + MaxCards || index < currentIndex) {
+            if (index > currentIndex + MAX || index < currentIndex) {
               return null;
             }
             return (
               <Card
-                item={item}
-                index={index}
-                key={index}
-                dataLength={newData.length}
-                maxVisibleItem={MaxCards}
-                currentIndex={currentIndex}
-                animatedValue={animatedValue}
-                setCurrentIndex={setCurrentIndex}
-                setNewData={setNewData}
-                newData={newData}
-              />
+              newData={newData}
+              setNewData={setNewData}
+              maxVisibleItems={MAX}
+              item={item}
+              index={index}
+              dataLength={newData.length}
+              animatedValue={animatedValue}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              key={index}
+            />
             );
           })}
         </View>
