@@ -83,7 +83,7 @@ const Card = ({
     const translateY = interpolate(
       animatedValue.value,
       [index - 1, index],
-      [-20, 0]
+      [-15, 0]
     );
 
     const scale = interpolate(

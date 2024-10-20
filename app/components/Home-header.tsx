@@ -20,10 +20,10 @@ const HomeHeader = () => {
           />
         </View>
       </TouchableOpacity>
-      <Text className="text-xl font-bold">Home</Text>
+      <Text className="text-xl font-bold text-white">Home</Text>
 
       <TouchableOpacity>
-        <Feather name="bell" size={24} color="black" />
+        <Feather name="bell" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );

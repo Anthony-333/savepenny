@@ -11,6 +11,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import Activity from "../components/Activity";
+import Uiview from "../../util/Uiview";
 
 const index = () => {
   const [newData, setNewData] = useState([...data, ...data]);
@@ -19,9 +20,6 @@ const index = () => {
   const animatedValue = useSharedValue(0);
   const MAX = 3;
 
-  useEffect(() => {
-    console.log(newData)
-  },[newData])
 
   const animatedStyle = useAnimatedStyle(() => {
     if (animatedValue.value > currentIndex + 0.5) {
@@ -42,10 +40,10 @@ const index = () => {
   });
 
   return (
-    <View className="flex-1 bg-white ">
+    <Uiview>
       <HomeHeader />
       <View className="mx-5 flex-1">
-        <View className="flex-1 justify-center items-center mt-[20] h-[200] ">
+        <View className="flex-1 justify-center items-center h-[200] ">
           {newData.map((item, index) => {
             if (index > currentIndex + MAX || index < currentIndex) {
               return null;
@@ -74,13 +72,13 @@ const index = () => {
             className="w-full"
             style={animatedStyle}
           >
-            {newData[activityIndex].activity.map((item, index) => {
+            {newData[currentIndex].activity.map((item, index) => {
               return <Activity item={item} key={index} />;
             })}
           </Animated.ScrollView>
         </View>
       </View>
-    </View>
+    </Uiview>
   );
 };
 
