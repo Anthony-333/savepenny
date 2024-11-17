@@ -4,6 +4,7 @@ import {
   Platform,
   Dimensions,
   LayoutChangeEvent,
+  Text,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
@@ -130,6 +131,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               key={route.key}
               style={{
                 width: `${100 / state.routes.length}%`,
+                
               }}
             >
               <TabBarButton
@@ -139,6 +141,8 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                 routeName={route.name}
                 color={isFocused ? "#fff" : "#222"}
               />
+
+      
             </Animated.View>
           );
         })}

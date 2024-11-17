@@ -1,4 +1,11 @@
-import { View, Text, Pressable, StyleSheet, Platform, LayoutChangeEvent } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Platform,
+  LayoutChangeEvent,
+} from "react-native";
 import React, { useEffect } from "react";
 // Update the import path
 import Animated, {
@@ -40,19 +47,35 @@ const TabBarButton = ({
     };
   });
 
-
-
   return (
     <Pressable
-     
       onPress={onPress}
       onLongPress={onLongPress}
       style={styles.tabbarItem}
     >
       <Animated.View style={animatedIconStyle}>
-        {icon[routeName as keyof typeof icon]({
-          color: color,
-        })}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          {icon[routeName as keyof typeof icon]({
+            color: color,
+          })}{" "}
+          <Text
+            style={{
+              textTransform: "capitalize",
+              fontSize: 10,
+              fontWeight: "bold",
+              color: color,
+            }}
+          >
+            {routeName === "index" ? "Home" : routeName}
+          </Text>
+        </View>
       </Animated.View>
     </Pressable>
   );
