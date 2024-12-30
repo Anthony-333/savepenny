@@ -7,9 +7,10 @@ const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const HomeHeader = () => {
+  const name = "John";
   return (
     <View className="flex-row justify-between items-center m-5 ">
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <View className="bg-violet-400 pt-2 px-1 rounded-lg">
           <Image
             source={require("../../assets/images/boy.svg")}
@@ -20,7 +21,12 @@ const HomeHeader = () => {
           />
         </View>
       </TouchableOpacity>
-      <Text className="text-xl font-bold text-white">Home</Text>
+      <Text className="text-xl font-bold text-white">Home</Text> */}
+
+      <View>
+        <Text className="text-white font-normal text-4xl">Hello, {name}</Text>
+        <Text className="text-gray-300 text-xl">save for your goals</Text>
+      </View>
 
       <TouchableOpacity>
         <Feather name="bell" size={24} color="white" />

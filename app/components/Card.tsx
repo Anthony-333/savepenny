@@ -10,7 +10,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 type Props = {
   newData: DataType[];
   setNewData: React.Dispatch<React.SetStateAction<DataType[]>>;
@@ -83,7 +84,7 @@ const Card = ({
     const translateY = interpolate(
       animatedValue.value,
       [index - 1, index],
-      [-15, 0]
+      [15, 0]
     );
 
     const scale = interpolate(
@@ -117,10 +118,12 @@ const Card = ({
     };
   });
 
+  console.log(newData);
+
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
-        className="absolute w-full h-[200] rounded-3xl p-5"
+        className="absolute w-full h-[200] rounded-3xl p-5 flex flex-col justify-between"
         style={[
           {
             backgroundColor: item.backgroundColor,
@@ -129,10 +132,42 @@ const Card = ({
           animatedStyle,
         ]}
       >
-        {/* <Text>{item.name}</Text>
-        <View className="w-[80] h-[40]">
-          <Image source={item.image} className="h-full w-full" />
-        </View> */}
+        <View className="flex flex-row justify-between">
+          <View>
+            <Text className="text-white font-semibold text-2xl">Salary</Text>
+          </View>
+
+          <View>
+            <Entypo name="dots-three-horizontal" size={24} color="white" />
+          </View>
+        </View>
+
+        <View className="">
+          <Text className="text-white text-4xl font-bold text-center">Php 50,000</Text>
+          <Text className="text-white text-center">Total Balance</Text>
+        </View>
+
+
+        <View className="flex flex-row justify-between">
+           <View className="w-[30%] flex flex-col items-center">
+          <View className="flex flex-row items-center gap-1">
+            <FontAwesome5 name="arrow-up" size={15} color="green" />
+            <Text className="text-white text-xl">Income</Text>
+          </View>
+
+          <Text className="text-white font-semibold">₱ 50,000</Text>
+        </View>
+
+        <View className="w-[30%] flex flex-col items-center">
+          <View className="flex flex-row items-center gap-1">
+          <FontAwesome5 name="arrow-down" size={15} color="red" />
+            <Text className="text-white text-xl">Expense</Text>
+          </View>
+
+          <Text className="text-white font-semibold">₱ 10,000</Text>
+        </View>
+        </View>
+       
       </Animated.View>
     </GestureDetector>
   );

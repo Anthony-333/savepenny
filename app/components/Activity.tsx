@@ -11,18 +11,18 @@ const Activity = ({ item }: Props) => {
     <View className="flex-row my-3 w-full justify-between items-center">
       <View className="flex-row items-center gap-3">
         <View className="bg-[#27043a] rounded-xl">
-          {/* <Image
+          <Image
             source={item.image}
             className="m-[14] h-[35] w-[35] object-contain "
-          /> */}
+          />
         </View>
         <View>
-          <Text className="text-xl font-semibold">{item.name}</Text>
-          <Text>{item.date}</Text>
+          <Text className="text-xl font-semibold text-white">{item.name}</Text>
+          <Text className="text-white">{item.date}</Text>
         </View>
       </View>
 
-      <Text className="font-bold text-xl">{item.price}</Text>
+      <Text className="font-bold text-xl text-white" >{item.price}</Text>
     </View>
   );
 };

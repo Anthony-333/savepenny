@@ -43,7 +43,9 @@ const index = () => {
     <Uiview>
       <HomeHeader />
       <View className="mx-5 flex-1">
-        <View className="flex-1 justify-center items-center h-[200] ">
+
+       
+        <View className="flex items-center h-[200] ">
           {newData.map((item, index) => {
             if (index > currentIndex + MAX || index < currentIndex) {
               return null;
@@ -64,7 +66,9 @@ const index = () => {
             );
           })}
         </View>
-        <Text className="text-4xl font-bold my-5">Recent Activity</Text>
+
+        <View className="mt-5 flex-1">
+           <Text className="text-4xl font-bold my-5 text-white">Recent Activities</Text>
 
         <View style={styles.activityContainer} className="w-full ">
           <Animated.ScrollView
@@ -77,6 +81,8 @@ const index = () => {
             })}
           </Animated.ScrollView>
         </View>
+        </View>
+       
       </View>
     </Uiview>
   );
