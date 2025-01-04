@@ -17,7 +17,7 @@ export default function AppLayout() {
   const insets = useSafeAreaInsets();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View
         style={{
           flex: 1,

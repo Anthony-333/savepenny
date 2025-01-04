@@ -24,6 +24,16 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+
+<Tabs.Screen
+        name="addnew"
+        options={{
+          title: "Add New",
+          headerStyle: {
+            backgroundColor: '#e7305b'
+         }
+        }}
+      />
       
       <Tabs.Screen
         name="wallet"

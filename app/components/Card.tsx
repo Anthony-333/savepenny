@@ -61,16 +61,14 @@ const Card = ({
     })
     .onEnd((e) => {
       if (currentIndex === index) {
-        // If the swipe distance is greater than 150 or the swipe velocity is greater than 1000
-        // go to the next card
         if (Math.abs(e.translationX) > 150 || Math.abs(e.velocityX) > 1000) {
+          // Update the current index first
+          runOnJS(setCurrentIndex)(currentIndex + 1);
+          // Then update the data and animate
           translateX.value = withTiming(width * direction.value, {}, () => {
             runOnJS(setNewData)([...newData, newData[currentIndex]]);
-            runOnJS(setCurrentIndex)(currentIndex + 1);
           });
           animatedValue.value = withTiming(currentIndex + 1);
-          // If the swipe distance is less than 150 or the swipe velocity is less than 1000
-          // go back to the original position
         } else {
           translateX.value = withTiming(0, { duration: 500 });
           animatedValue.value = withTiming(currentIndex, { duration: 500 });

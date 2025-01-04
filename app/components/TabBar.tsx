@@ -5,6 +5,8 @@ import {
   Dimensions,
   LayoutChangeEvent,
   Text,
+  Pressable,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
@@ -45,6 +47,10 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     };
   });
 
+  const handleCenterPress = () => {
+    Alert.alert("Center Button Pressed!");
+  };
+
   return (
     <View
       style={{
@@ -69,7 +75,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           shadowRadius: 10,
           shadowOpacity: Platform.OS == "ios" ? 0.3 : 0.0,
           height: Platform.OS === "ios" ? 100 : 60,
-          overflow: "hidden",
+          overflow: "visible",
           paddingBottom: insets.bottom,
         }}
       >
@@ -98,8 +104,9 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               style={{
                 backgroundColor: "#723FEB",
                 borderRadius: 30,
-                height: "85%",
-                width: "85%",
+                height: 5,
+                width: 50,
+                top:13
               }}
             />
           </View>
@@ -131,18 +138,36 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               key={route.key}
               style={{
                 width: `${100 / state.routes.length}%`,
-                
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <TabBarButton
-                onPress={onPress}
-                onLongPress={onLongPress}
-                isFocused={isFocused}
-                routeName={route.name}
-                color={isFocused ? "#fff" : "#222"}
-              />
-
-      
+              {index === Math.floor(state.routes.length / 2) ? (
+                <Pressable
+                  onPress={handleCenterPress}
+                  style={{
+                    position: "absolute",
+                    width: 60,
+                    height: 60,
+                    backgroundColor: "#723FEB",
+                    borderRadius: 30,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    top: -20,
+                    zIndex: 1,
+                  }}
+                >
+                  <Text style={{ color: "#fff", fontSize: 24 }}>+</Text>
+                </Pressable>
+              ) : (
+                <TabBarButton
+                  onPress={onPress}
+                  onLongPress={onLongPress}
+                  isFocused={isFocused}
+                  routeName={route.name}
+                  color={isFocused ? "#fff" : "#222"}
+                />
+              )}
             </Animated.View>
           );
         })}

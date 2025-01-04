@@ -6,6 +6,10 @@ export const icon = {
   analytics: (props: any) => (
     <Ionicons name="analytics-sharp" size={24} {...props} />
   ),
+
+  addnew: (props: any) => (
+    <Ionicons name="settings-outline" size={24} {...props} />
+  ),
   
   wallet: (props: any) => (
     <Ionicons name="wallet-outline" size={24} {...props} />

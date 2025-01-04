@@ -9,17 +9,7 @@ interface UiviewProps {
 
 const Uiview: React.FC<UiviewProps> = ({ children }) => {
   const insets = useSafeAreaInsets();
-  return (
-    <LinearGradient
-      colors={["#080808", "#22095E", "#4C00FF"]}
-      locations={[0.7, 0.9]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1.1, y: 0 }}
-      style={{ flex: 1, paddingTop: insets.top }}
-    >
-      {children}
-    </LinearGradient>
-  );
+  return <View style={{ flex: 1, paddingTop: insets.top, backgroundColor: '#f5f5f5' }}>{children}</View>;
 };
 
 export default Uiview;

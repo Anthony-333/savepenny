@@ -64,7 +64,7 @@ const TabBarButton = ({
         >
           {icon[routeName as keyof typeof icon]({
             color: color,
-          })}{" "}
+          })}
           <Text
             style={{
               textTransform: "capitalize",
@@ -73,7 +73,7 @@ const TabBarButton = ({
               color: color,
             }}
           >
-            {routeName === "index" ? "Home" : routeName}
+            {/* {routeName === "index" ? "Home" : routeName} */}
           </Text>
         </View>
       </Animated.View>
