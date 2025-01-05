@@ -4,7 +4,7 @@ import { Tabs } from "expo-router";
 import { Alert, Text } from "react-native";
 import HomeHeader from "../components/Home-header";
 import CenterButton from "../components/centerButton";
-import  TabBar  from "../components/TabBar";
+import TabBar from "../components/TabBar";
 
 export default function TabLayout() {
   return (
@@ -20,35 +20,30 @@ export default function TabLayout() {
         name="analytics"
         options={{
           title: "Analytics",
-
-          headerShown: false,
         }}
       />
 
-<Tabs.Screen
+      <Tabs.Screen
         name="addnew"
         options={{
           title: "Add New",
           headerStyle: {
-            backgroundColor: '#e7305b'
-         }
+            backgroundColor: "#e7305b",
+          },
         }}
       />
-      
+
       <Tabs.Screen
         name="wallet"
         options={{
           title: "Wallet",
-          headerStyle: {
-            backgroundColor: '#e7305b'
-         }
+         
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-         
         }}
       />
     </Tabs>

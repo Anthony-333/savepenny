@@ -9,7 +9,7 @@ interface UiviewProps {
 
 const Uiview: React.FC<UiviewProps> = ({ children }) => {
   const insets = useSafeAreaInsets();
-  return <View style={{ flex: 1, paddingTop: insets.top, backgroundColor: '#f5f5f5' }}>{children}</View>;
+  return <View style={{ flex: 1, paddingTop: insets.top, backgroundColor: '#f8f8f8' }}>{children}</View>;
 };
 
 export default Uiview;

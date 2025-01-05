@@ -70,7 +70,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           justifyContent: "space-between",
           width: "100%",
           borderRadius: 0,
-          backgroundColor: "#080808",
+          backgroundColor: "#ffffff",
           shadowOffset: { width: 0, height: 10 },
           shadowRadius: 10,
           shadowOpacity: Platform.OS == "ios" ? 0.3 : 0.0,
@@ -102,11 +102,11 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           >
             <View
               style={{
-                backgroundColor: "#723FEB",
+                backgroundColor: "#3e9c35",
                 borderRadius: 30,
                 height: 5,
                 width: 50,
-                top:13
+                top:20
               }}
             />
           </View>
@@ -149,11 +149,11 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                     position: "absolute",
                     width: 60,
                     height: 60,
-                    backgroundColor: "#723FEB",
+                    backgroundColor: "#3e9c35",
                     borderRadius: 30,
                     justifyContent: "center",
                     alignItems: "center",
-                    top: -20,
+                    top: -30,
                     zIndex: 1,
                   }}
                 >
@@ -165,7 +165,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                   onLongPress={onLongPress}
                   isFocused={isFocused}
                   routeName={route.name}
-                  color={isFocused ? "#fff" : "#222"}
+                  color={isFocused ? "#222222" : "#CCCCCC"}
                 />
               )}
             </Animated.View>

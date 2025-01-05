@@ -1,4 +1,11 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import HomeHeader from "../components/Home-header";
 import { data, DataType } from "../../assets/data/data";
@@ -12,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Activity from "../components/Activity";
 import Uiview from "../../util/Uiview";
+import UiText from "@/util/UiText";
 
 const index = () => {
   const [newData, setNewData] = useState([...data, ...data]);
@@ -19,7 +27,6 @@ const index = () => {
   const [activityIndex, setActivityIndex] = useState(0);
   const animatedValue = useSharedValue(0);
   const MAX = 3;
-
 
   const animatedStyle = useAnimatedStyle(() => {
     if (animatedValue.value > currentIndex + 0.5) {
@@ -42,9 +49,7 @@ const index = () => {
   return (
     <Uiview>
       <HomeHeader />
-      <View className="mx-5 flex-1">
-
-       
+      <ScrollView showsVerticalScrollIndicator={false} className="mx-5 flex mb-20">
         <View className="flex items-center h-[200] ">
           {newData.map((item, index) => {
             if (index > currentIndex + MAX || index < currentIndex) {
@@ -52,38 +57,44 @@ const index = () => {
             }
             return (
               <Card
-              newData={newData}
-              setNewData={setNewData}
-              maxVisibleItems={MAX}
-              item={item}
-              index={index}
-              dataLength={newData.length}
-              animatedValue={animatedValue}
-              currentIndex={currentIndex}
-              setCurrentIndex={setCurrentIndex}
-              key={index}
-            />
+                newData={newData}
+                setNewData={setNewData}
+                maxVisibleItems={MAX}
+                item={item}
+                index={index}
+                dataLength={newData.length}
+                animatedValue={animatedValue}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                key={index}
+              />
             );
           })}
         </View>
 
-        <View className="mt-5 flex-1">
-           <Text className="text-4xl font-bold my-5 text-white">Recent Activities</Text>
+        <View className="flex bg-white mt-7 p-5 rounded-3xl border border-gray-100 shadow-slate-200  ">
+          <View className="flex flex-row justify-between items-center">
+            <UiText className="text-2xl font-bold">Transactions</UiText>
 
-        <View style={styles.activityContainer} className="w-full ">
-          <Animated.ScrollView
-            showsVerticalScrollIndicator={false}
+            <TouchableOpacity>
+              <UiText className="color-[#3e9c35]">view all</UiText>
+            </TouchableOpacity>
+          </View>
+
+          <View 
+            style={[styles.activityContainer]} 
             className="w-full"
-            style={animatedStyle}
           >
-            {newData[currentIndex].activity.map((item, index) => {
-              return <Activity item={item} key={index} />;
-            })}
-          </Animated.ScrollView>
+           
+              {newData[currentIndex].activity
+                .slice(0, 5)
+                .map((item, index) => {
+                  return <Activity item={item} key={index} />;
+                })}
+            
+          </View>
         </View>
-        </View>
-       
-      </View>
+      </ScrollView>
     </Uiview>
   );
 };
@@ -95,5 +106,6 @@ const styles = StyleSheet.create({
     flex: 3 / 2,
     justifyContent: "center",
     alignItems: "center",
+ 
   },
 });

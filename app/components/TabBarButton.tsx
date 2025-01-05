@@ -65,16 +65,7 @@ const TabBarButton = ({
           {icon[routeName as keyof typeof icon]({
             color: color,
           })}
-          <Text
-            style={{
-              textTransform: "capitalize",
-              fontSize: 10,
-              fontWeight: "bold",
-              color: color,
-            }}
-          >
-            {/* {routeName === "index" ? "Home" : routeName} */}
-          </Text>
+     
         </View>
       </Animated.View>
     </Pressable>

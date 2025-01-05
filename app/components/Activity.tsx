@@ -1,6 +1,7 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
 import { ActivityType } from "../../assets/data/data";
+import UiText from "@/util/UiText";
 
 type Props = {
   item: ActivityType;
@@ -17,12 +18,12 @@ const Activity = ({ item }: Props) => {
           />
         </View>
         <View>
-          <Text className="text-xl font-semibold text-white">{item.name}</Text>
-          <Text className="text-white">{item.date}</Text>
+          <UiText className="text-xl font-semibold">{item.name}</UiText>
+         <UiText>{item.date}</UiText>
         </View>
       </View>
 
-      <Text className="font-bold text-xl text-white" >{item.price}</Text>
+      <UiText className="font-bold text-xl" >{item.price}</UiText>
     </View>
   );
 };

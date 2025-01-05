@@ -12,10 +12,10 @@ const HomeHeader = () => {
     <View className="flex-row justify-between items-center m-5 ">
       <TouchableOpacity>
         <View
-          className="rounded-lg p-3"
+          className="rounded-full p-3"
           style={{ backgroundColor: "#c2e0c1" }}
         >
-          <FontAwesome5 name="user" size={20} color="#04cc00" />
+          <FontAwesome5 name="user" size={15} color="#04cc00" />
         </View>
       </TouchableOpacity>
       <Text className="text-xl font-bold text-[#222222]">Home</Text>
