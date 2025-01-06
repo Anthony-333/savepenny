@@ -2,14 +2,16 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Image } from "expo-image";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const HomeHeader = () => {
   const name = "John";
+  const insets = useSafeAreaInsets();
   return (
-    <View className="flex-row justify-between items-center m-5 ">
+    <View className="flex-row justify-between items-center bg-white px-5 pb-2 mb-5" style={{paddingTop: insets.top}}>
       <TouchableOpacity>
         <View
           className="rounded-full p-3"
