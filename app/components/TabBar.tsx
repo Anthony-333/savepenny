@@ -157,7 +157,11 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                     zIndex: 1,
                   }}
                 >
-                  <Text style={{ color: "#fff", fontSize: 24 }}>+</Text>
+                  <Text style={{ 
+                    color: "#fff", 
+                    fontSize: 24,
+                    fontFamily: 'figtree-regular'
+                  }}>+</Text>
                 </Pressable>
               ) : (
                 <TabBarButton

@@ -20,9 +20,7 @@ const HomeHeader = () => {
           <FontAwesome5 name="user" size={15} color="#04cc00" />
         </View>
       </TouchableOpacity>
-      <Text className="text-xl font-bold text-[#222222]">Home</Text>
-
-     
+      <Text className="text-xl font-bold text-[#222222]" style={{ fontFamily: 'figtree-regular' }}>Home</Text>
 
       <TouchableOpacity>
         <Feather name="bell" size={24} color="#222222" />

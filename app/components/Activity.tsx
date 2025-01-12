@@ -18,12 +18,12 @@ const Activity = ({ item }: Props) => {
           />
         </View>
         <View>
-          <UiText className="text-xl font-semibold">{item.name}</UiText>
-         <UiText>{item.date}</UiText>
+          <UiText className="text-xl font-['figtree-regular']">{item.name}</UiText>
+          <UiText>{item.date}</UiText>
         </View>
       </View>
 
-      <UiText className="font-bold text-xl" >{item.price}</UiText>
+      <UiText className="font-['figtree-regular'] text-xl">{item.price}</UiText>
     </View>
   );
 };
