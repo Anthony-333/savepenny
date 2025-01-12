@@ -1,9 +1,5 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
-import { Alert, Text } from "react-native";
-import HomeHeader from "../components/Home-header";
-import CenterButton from "../components/centerButton";
 import TabBar from "../components/TabBar";
 
 export default function TabLayout() {

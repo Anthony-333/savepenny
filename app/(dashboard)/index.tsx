@@ -48,41 +48,38 @@ const index = () => {
 
   return (
     <Uiview paddingTop={0}>
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
         className="flex mb-20"
         stickyHeaderIndices={[0]}
       >
         <View style={{ zIndex: 1 }}>
           <HomeHeader />
         </View>
-        
-        <View className="mx-5">
-          <View 
-            className="flex items-center h-[200]"
-            style={{ zIndex: 99999 }}
-          >
-            {newData.map((item, index) => {
-              if (index > currentIndex + MAX || index < currentIndex) {
-                return null;
-              }
-              return (
-                <Card
-                  newData={newData}
-                  setNewData={setNewData}
-                  maxVisibleItems={MAX}
-                  item={item}
-                  index={index}
-                  dataLength={newData.length}
-                  animatedValue={animatedValue}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                  key={index}
-                />
-              );
-            })}
-          </View>
 
+        <View className="flex items-center mx-5 h-[200]" style={{ zIndex: 1 }}>
+          {newData.map((item, index) => {
+            if (index > currentIndex + MAX || index < currentIndex) {
+              return null;
+            }
+            return (
+              <Card
+                newData={newData}
+                setNewData={setNewData}
+                maxVisibleItems={MAX}
+                item={item}
+                index={index}
+                dataLength={newData.length}
+                animatedValue={animatedValue}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                key={index}
+              />
+            );
+          })}
+        </View>
+
+        <View className="mx-5">
           <View className="flex bg-white mt-7 p-5 rounded-3xl border border-gray-100 shadow-slate-200">
             <View className="flex flex-row justify-between items-center">
               <UiText className="text-2xl font-bold">Transactions</UiText>
@@ -92,21 +89,12 @@ const index = () => {
               </TouchableOpacity>
             </View>
 
-            <View 
-              style={[styles.activityContainer]} 
-              className="w-full"
-            >
-             
-                {newData[currentIndex].activity
-                  .slice(0, 5)
-                  .map((item, index) => {
-                    return <Activity item={item} key={index} />;
-                  })}
-              
+            <View style={[styles.activityContainer]} className="w-full">
+              {newData[currentIndex].activity.slice(0, 5).map((item, index) => {
+                return <Activity item={item} key={index} />;
+              })}
             </View>
           </View>
-
-          
         </View>
       </ScrollView>
     </Uiview>
@@ -120,6 +108,5 @@ const styles = StyleSheet.create({
     flex: 3 / 2,
     justifyContent: "center",
     alignItems: "center",
- 
   },
 });
