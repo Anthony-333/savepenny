@@ -57,6 +57,10 @@ const index = () => {
           <HomeHeader />
         </View>
 
+        <View className="mx-5 my-3">
+          <UiText className="font-bold text-2xl">Home</UiText>
+        </View>
+
         <View className="flex items-center mx-5 h-[200]" style={{ zIndex: 1 }}>
           {newData.map((item, index) => {
             if (index > currentIndex + MAX || index < currentIndex) {
