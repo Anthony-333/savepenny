@@ -36,7 +36,8 @@ const HomeHeader = () => {
       style={{ paddingTop: insets.top }}
     >
       <View className="flex-row items-center gap-2">
-        <TouchableOpacity>
+
+        <TouchableOpacity className="">
           <UiText style={styles.initialsStyle}>{getInitials(name)}</UiText>
         </TouchableOpacity>
 
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#04cc00",
     color: "white",
     textAlign: "center",
-    textAlignVertical: "center",
+    lineHeight: 40,
     fontWeight: "bold",
   },
 });
