@@ -20,6 +20,7 @@ import Animated, {
 import Activity from "../components/Activity";
 import Uiview from "../../util/Uiview";
 import UiText from "@/util/UiText";
+import EmptyWidget from "../components/EmptyWidget";
 
 const index = () => {
   const [newData, setNewData] = useState([...data, ...data]);
@@ -62,7 +63,9 @@ const index = () => {
         </View>
 
         <View className="flex items-center mx-5 h-[200]" style={{ zIndex: 1 }}>
-          {newData.map((item, index) => {
+          <EmptyWidget />
+
+          {/* {newData.map((item, index) => {
             if (index > currentIndex + MAX || index < currentIndex) {
               return null;
             }
@@ -80,7 +83,7 @@ const index = () => {
                 key={index}
               />
             );
-          })}
+          })} */}
         </View>
 
         <View className="mx-5">

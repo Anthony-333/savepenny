@@ -23,7 +23,11 @@ export default function AppLayout() {
           flex: 1,
         }}
       >
-        <Slot />
+        <Stack>
+          <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+          <Stack.Screen name="addAccount" options={{ headerShown: false }} />
+          <Stack.Screen name="addAccountDetails" options={{ headerShown: false }} />
+        </Stack>
       </View>
     </GestureHandlerRootView>
   );
