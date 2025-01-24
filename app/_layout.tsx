@@ -1,4 +1,4 @@
-import "../global.css"
+import "../global.css";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Slot, Stack } from "expo-router";
@@ -10,8 +10,6 @@ import {
 import "../global.css";
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-
-
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
@@ -26,7 +24,11 @@ export default function AppLayout() {
         <Stack>
           <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
           <Stack.Screen name="addAccount" options={{ headerShown: false }} />
-          <Stack.Screen name="addAccountDetails" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="addAccountDetails"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="addFeatures" options={{ headerShown: false }} />
         </Stack>
       </View>
     </GestureHandlerRootView>

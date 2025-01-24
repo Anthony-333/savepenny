@@ -1,8 +1,17 @@
-import { View, Text, Pressable, TextInput, ScrollView, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Uiview from "@/util/Uiview";
 import { useState } from "react";
+import { Image } from "expo-image";
+import UiText from "@/util/UiText";
 
 export default function AddAccountDetails() {
   const router = useRouter();
@@ -48,20 +57,53 @@ export default function AddAccountDetails() {
       </View>
 
       {/* Form content */}
-      <ScrollView 
-        className="flex-1" 
+      <ScrollView
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerClassName="p-4 space-y-6"
       >
+        <View className="flex-col justify-between items-center bg-red-500 w-full h-56 rounded-2xl p-5">
+          <View className="flex-row items-center justify-between w-full">
+            <FontAwesome name="bank" size={24} color="black" />
+          </View>
+
+          <View className="w-full">
+            <UiText className="text-gray-900 font-bold text-2xl mt-1">
+              **** **** **** 1234
+            </UiText>
+          </View>
+
+          <View className="w-full flex-row justify-between">
+            <View>
+              <Text>Card Holder Name</Text>
+              <Text>John Doe</Text>
+            </View>
+            <View>
+              <Text>Expiry Date</Text>
+              <Text>01/25</Text>
+            </View>
+            <View>
+              <Image
+                source={require("@/assets/image/bank-logo/Mastercard-Logo.png")}
+                style={{ width: 80
+                  , height: 50 }}
+              />
+            </View>
+          </View>
+        </View>
         {/* Account Type Info */}
         <View className="bg-gray-50 rounded-2xl overflow-hidden">
           <View className="p-4 border-b border-gray-200">
             <Text className="text-gray-500 text-sm">Account Type</Text>
-            <Text className="text-gray-900 font-medium mt-1 text-base">{type}</Text>
+            <Text className="text-gray-900 font-medium mt-1 text-base">
+              {type}
+            </Text>
           </View>
           <View className="p-4">
             <Text className="text-gray-500 text-sm">Category</Text>
-            <Text className="text-gray-900 font-medium mt-1 text-base">{category}</Text>
+            <Text className="text-gray-900 font-medium mt-1 text-base">
+              {category}
+            </Text>
           </View>
         </View>
 
@@ -81,11 +123,16 @@ export default function AddAccountDetails() {
 
         {/* Current Balance */}
         <View className="space-y-2">
-          <Text className="text-gray-900 font-medium px-1">Current Balance</Text>
+          <Text className="text-gray-900 font-medium px-1">
+            Current Balance
+          </Text>
           <TextInput
             value={formData.balance}
             onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, balance: text.replace(/[^0-9.]/g, '') }))
+              setFormData((prev) => ({
+                ...prev,
+                balance: text.replace(/[^0-9.]/g, ""),
+              }))
             }
             placeholder="0.00"
             keyboardType="decimal-pad"
@@ -113,4 +160,4 @@ export default function AddAccountDetails() {
       </ScrollView>
     </Uiview>
   );
-} 
+}
