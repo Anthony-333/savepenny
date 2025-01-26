@@ -48,21 +48,21 @@ const index = () => {
   });
 
   return (
-    <Uiview paddingTop={0}>
+    <Uiview paddingTop={0} className="flex-1">
+  
+      <View style={{ zIndex: 1 }}>
+        <HomeHeader />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        className="flex mb-20"
+        className="flex mb-20 mx-5"
         stickyHeaderIndices={[0]}
       >
-        <View style={{ zIndex: 1 }}>
-          <HomeHeader />
-        </View>
-
-        <View className="mx-5 my-3">
+        <View className="my-3">
           <UiText className="font-bold text-2xl">Home</UiText>
         </View>
 
-        <View className="flex items-center mx-5 h-[200]" style={{ zIndex: 1 }}>
+        <View className="flex items-center h-[200]" style={{ zIndex: 1 }}>
           <EmptyWidget type="account" />
 
           {/* {newData.map((item, index) => {
@@ -86,7 +86,7 @@ const index = () => {
           })} */}
         </View>
 
-        <View className="mx-5">
+        <View className="">
           {/* add new feature component here */}
           <EmptyWidget type="features" />
           {/* <View className="flex bg-white mt-7 p-5 rounded-3xl border border-gray-100 shadow-slate-200">

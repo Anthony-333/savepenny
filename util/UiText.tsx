@@ -1,7 +1,7 @@
-import { Text } from "react-native";
+import { Text, TextProps } from "react-native";
 import React from "react";
 
-interface UiTextProps {
+interface UiTextProps extends TextProps {
   children: React.ReactNode;
   className?: string;
   color?: string;
@@ -12,12 +12,14 @@ const UiText: React.FC<UiTextProps> = ({
   children, 
   className = '', 
   color = '#222222',
-  style = {}
+  style = {},
+  ...props
 }) => {
   return (
     <Text 
-      className={`text-[${color}]  ${className}`}
+      className={`text-[${color}] ${className}`}
       style={style}
+      {...props}
     >
       {children}
     </Text>

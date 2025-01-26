@@ -199,15 +199,33 @@ export default function AddAccount() {
       items: [
         {
           name: "Transaction",
-          icon: <MaterialCommunityIcons name="cash-multiple" size={24} color="#4B5563" />,
+          icon: (
+            <MaterialCommunityIcons
+              name="cash-multiple"
+              size={24}
+              color="#4B5563"
+            />
+          ),
         },
         {
           name: "Goals",
-          icon: <MaterialCommunityIcons name="flag-variant" size={24} color="#4B5563" />,
+          icon: (
+            <MaterialCommunityIcons
+              name="flag-variant"
+              size={24}
+              color="#4B5563"
+            />
+          ),
         },
         {
           name: "Budget",
-          icon: <MaterialCommunityIcons name="chart-pie" size={24} color="#4B5563" />,
+          icon: (
+            <MaterialCommunityIcons
+              name="chart-pie"
+              size={24}
+              color="#4B5563"
+            />
+          ),
         },
       ],
     },
@@ -216,11 +234,23 @@ export default function AddAccount() {
       items: [
         {
           name: "Reports",
-          icon: <MaterialCommunityIcons name="chart-bar" size={24} color="#4B5563" />,
+          icon: (
+            <MaterialCommunityIcons
+              name="chart-bar"
+              size={24}
+              color="#4B5563"
+            />
+          ),
         },
         {
           name: "Categories",
-          icon: <MaterialCommunityIcons name="tag-multiple" size={24} color="#4B5563" />,
+          icon: (
+            <MaterialCommunityIcons
+              name="tag-multiple"
+              size={24}
+              color="#4B5563"
+            />
+          ),
         },
       ],
     },
