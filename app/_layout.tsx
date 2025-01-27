@@ -46,6 +46,10 @@ export default function AppLayout() {
                 name="addFeatures"
                 options={{ headerShown: false }}
               />
+               <Stack.Screen
+                name="selectBank"
+                options={{ headerShown: false }}
+              />
             </Stack>
           </View>
         </GestureHandlerRootView>

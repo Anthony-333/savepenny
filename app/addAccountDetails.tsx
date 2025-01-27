@@ -3,11 +3,12 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Uiview from "@/util/Uiview";
 import { useState } from "react";
-import { Image } from "expo-image";
+
 import UiText from "@/util/UiText";
-import UiTextInput from "@/util/UiTextInput";
+
 import FormsBankAccount from "./components/addAccountForms/FormsBankAccount";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFormStore } from "@/store/useFormStore";
 
 export default function AddAccountDetails() {
   const router = useRouter();
@@ -16,15 +17,20 @@ export default function AddAccountDetails() {
     category: string;
   }>();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    balance: "",
-    notes: "",
-  });
+  // Get form data from Zustand store
+  const { formData, resetForm } = useFormStore();
 
   const handleSubmit = () => {
-    // TODO: Implement account creation logic
-    console.log("Form submitted:", { ...formData, type, category });
+    console.log("Form submitted:", {
+      ...formData,
+      type,
+      category,
+      selectedBank: {
+        id: formData.bankId,
+        name: formData.bankDisplayName
+      }
+    });
+    resetForm(); // Reset form after submission
     router.back();
   };
 
@@ -47,7 +53,7 @@ export default function AddAccountDetails() {
           </View>
           <Pressable
             onPress={handleSubmit}
-            className="bg-blue-500 px-5 py-2.5 rounded-lg ml-4"
+            className="bg-[#3e9c35] px-5 py-2.5 rounded-lg ml-4"
           >
             <UiText className="text-white font-medium">Save</UiText>
           </Pressable>
@@ -61,8 +67,6 @@ export default function AddAccountDetails() {
         >
           {type === "Bank Account" && (
             <FormsBankAccount
-              formData={formData}
-              setFormData={setFormData}
               type={type}
               category={category}
             />
