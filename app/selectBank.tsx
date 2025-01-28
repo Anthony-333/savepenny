@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import UiText from "@/util/UiText";
 import Uiview from "@/util/Uiview";
+import { useFormStore } from "@/store/useFormStore";
 
 interface Bank {
   name: string;
@@ -84,12 +85,11 @@ type FilterType = "all" | "bank" | "digital" | "ewallet";
 
 export default function SelectBank() {
   const router = useRouter();
+  const { setBank } = useFormStore();
   const { onSelect } = useLocalSearchParams<{ onSelect: string }>();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
   const [customName, setCustomName] = useState("");
-
-
 
   const filteredBanks = useMemo(() => {
     let filtered = banks;
@@ -110,7 +110,7 @@ export default function SelectBank() {
   }, [filter, search]);
 
   const handleSelect = (bank: Bank | { name: string; displayName: string }) => {
-    console.log('handleSelect called with bank:', bank);
+    setBank(bank.name, bank.displayName);
     router.back();
     if (onSelect) {
       console.log('Executing onSelect with bank:', bank);

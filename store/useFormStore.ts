@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import { router } from "expo-router";
 
 interface FormData {
   name: string;
@@ -23,6 +24,7 @@ interface FormStore {
   setActiveColorIndex: (index: number) => void;
   setSliderPosition: (position: [number, number]) => void;
   toggleNetworkDropdown: () => void;
+  submitForm: (type: string, category: string) => void;
 }
 
 const initialState: FormData = {
@@ -38,7 +40,7 @@ const initialState: FormData = {
   activeColorIndex: 0,
 };
 
-export const useFormStore = create<FormStore>((set) => ({
+export const useFormStore = create<FormStore>((set, get) => ({
   formData: initialState,
   setFormData: (data) =>
     set((state) => ({
@@ -89,4 +91,10 @@ export const useFormStore = create<FormStore>((set) => ({
         isNetworkDropdownOpen: !state.formData.isNetworkDropdownOpen,
       },
     })),
-})); 
+  submitForm: (type, category) => {
+    const { formData, resetForm } = get();
+    console.log("Form submitted:", formData);
+    resetForm();
+    router.push("/(dashboard)");
+  },
+}));

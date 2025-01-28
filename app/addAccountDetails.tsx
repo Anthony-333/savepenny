@@ -17,22 +17,8 @@ export default function AddAccountDetails() {
     category: string;
   }>();
 
-  // Get form data from Zustand store
-  const { formData, resetForm } = useFormStore();
-
-  const handleSubmit = () => {
-    console.log("Form submitted:", {
-      ...formData,
-      type,
-      category,
-      selectedBank: {
-        id: formData.bankId,
-        name: formData.bankDisplayName
-      }
-    });
-    resetForm(); // Reset form after submission
-    router.back();
-  };
+  // Get form data and submit function from Zustand store
+  const { submitForm } = useFormStore();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -52,7 +38,7 @@ export default function AddAccountDetails() {
             </UiText>
           </View>
           <Pressable
-            onPress={handleSubmit}
+            onPress={() => submitForm(type, category)}
             className="bg-[#3e9c35] px-5 py-2.5 rounded-lg ml-4"
           >
             <UiText className="text-white font-medium">Save</UiText>

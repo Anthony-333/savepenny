@@ -9,6 +9,7 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import UiText from "@/util/UiText";
 import UiTextInput from "@/util/UiTextInput";
+import UiButton from "@/util/UiButton";
 import { LinearGradient } from "expo-linear-gradient";
 import ColorPicker from "react-native-wheel-color-picker";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
