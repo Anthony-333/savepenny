@@ -3,6 +3,7 @@ import {
   Pressable,
   Dimensions,
   PanResponder,
+  Button,
 } from "react-native";
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
@@ -24,7 +25,7 @@ interface FormsBankAccountProps {
 const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["25%", "50%"];
+  const snapPoints = ["60%", "70%"];
 
   // Get all the state and actions from Zustand store
   const {
@@ -55,7 +56,7 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View className="space-y-4">
+      <View className="p-5">
         <LinearGradient
           colors={formData.colors}
           start={{ x: formData.sliderPosition[0] / 100, y: 0 }}
@@ -91,7 +92,11 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
             {formData.paymentNetwork && (
               <View className="mt-2">
                 <FontAwesome
-                  name={formData.paymentNetwork === "visa" ? "cc-visa" : "cc-mastercard"}
+                  name={
+                    formData.paymentNetwork === "visa"
+                      ? "cc-visa"
+                      : "cc-mastercard"
+                  }
                   size={32}
                   color="white"
                 />
@@ -113,7 +118,9 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
                 values={formData.sliderPosition}
                 min={0}
                 max={100}
-                onValuesChange={(values) => setSliderPosition(values as [number, number])}
+                onValuesChange={(values) =>
+                  setSliderPosition(values as [number, number])
+                }
               />
             </View>
             <Pressable
@@ -126,7 +133,9 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
 
         {/* Bank Selection */}
         <View className="space-y-2">
-          <UiText className="text-gray-900 font-medium px-1">Select Bank</UiText>
+          <UiText className="text-gray-900 font-medium px-1">
+            Select Bank
+          </UiText>
           <Pressable
             onPress={() => {
               router.push({
@@ -141,7 +150,9 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
             }}
             className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
           >
-            <UiText className={formData.bankId ? "text-gray-900" : "text-gray-500"}>
+            <UiText
+              className={formData.bankId ? "text-gray-900" : "text-gray-500"}
+            >
               {formData.bankDisplayName || "Select a bank"}
             </UiText>
             <FontAwesome name="chevron-right" size={16} color="#6B7280" />
@@ -150,19 +161,27 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
 
         {/* Payment Network Selection */}
         <View className="space-y-2">
-          <UiText className="text-gray-900 font-medium px-1">Payment Network</UiText>
+          <UiText className="text-gray-900 font-medium px-1">
+            Payment Network
+          </UiText>
           <Pressable
             onPress={toggleNetworkDropdown}
             className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
           >
-            <UiText className={formData.paymentNetwork ? "text-gray-900" : "text-gray-500"}>
+            <UiText
+              className={
+                formData.paymentNetwork ? "text-gray-900" : "text-gray-500"
+              }
+            >
               {formData.paymentNetwork
                 ? formData.paymentNetwork.charAt(0).toUpperCase() +
                   formData.paymentNetwork.slice(1)
                 : "Select payment network"}
             </UiText>
             <FontAwesome
-              name={formData.isNetworkDropdownOpen ? "chevron-up" : "chevron-down"}
+              name={
+                formData.isNetworkDropdownOpen ? "chevron-up" : "chevron-down"
+              }
               size={16}
               color="#6B7280"
             />
@@ -174,14 +193,24 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
                 onPress={() => setPaymentNetwork("visa")}
                 className="flex-row items-center p-4 border-b border-gray-100"
               >
-                <FontAwesome name="cc-visa" size={24} color="#1a1f36" className="mr-3" />
+                <FontAwesome
+                  name="cc-visa"
+                  size={24}
+                  color="#1a1f36"
+                  className="mr-3"
+                />
                 <UiText className="text-gray-900 ml-3">Visa</UiText>
               </Pressable>
               <Pressable
                 onPress={() => setPaymentNetwork("mastercard")}
                 className="flex-row items-center p-4"
               >
-                <FontAwesome name="cc-mastercard" size={24} color="#1a1f36" className="mr-3" />
+                <FontAwesome
+                  name="cc-mastercard"
+                  size={24}
+                  color="#1a1f36"
+                  className="mr-3"
+                />
                 <UiText className="text-gray-900 ml-3">Mastercard</UiText>
               </Pressable>
             </View>
@@ -192,11 +221,15 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
         <View className="bg-gray-50 rounded-2xl overflow-hidden">
           <View className="p-4 border-b border-gray-200">
             <UiText className="text-gray-500 text-sm">Account Type</UiText>
-            <UiText className="text-gray-900 font-medium mt-1 text-base">{type}</UiText>
+            <UiText className="text-gray-900 font-medium mt-1 text-base">
+              {type}
+            </UiText>
           </View>
           <View className="p-4">
             <UiText className="text-gray-500 text-sm">Category</UiText>
-            <UiText className="text-gray-900 font-medium mt-1 text-base">{category}</UiText>
+            <UiText className="text-gray-900 font-medium mt-1 text-base">
+              {category}
+            </UiText>
           </View>
         </View>
 
@@ -212,7 +245,9 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
         <UiTextInput
           label="Current Balance"
           value={formData.balance}
-          onChangeText={(text) => setFormData({ balance: text.replace(/[^0-9.]/g, "") })}
+          onChangeText={(text) =>
+            setFormData({ balance: text.replace(/[^0-9.]/g, "") })
+          }
           placeholder="0.00"
           keyboardType="decimal-pad"
         />
@@ -244,7 +279,9 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
           shadowOpacity: 0.25,
           shadowRadius: 4,
           elevation: 5,
+          width: "100%",
         }}
+
       >
         <BottomSheetView className="flex-1 p-4">
           <View className="flex-row items-center justify-between mb-4">
@@ -256,14 +293,16 @@ const FormsBankAccount = ({ type, category }: FormsBankAccountProps) => {
               <FontAwesome name="times" size={24} color="#000" />
             </Pressable>
           </View>
-          <ColorPicker
-            color={formData.colors[formData.activeColorIndex]}
-            onColorChange={handleColorChange}
-            thumbSize={30}
-            sliderSize={30}
-            noSnap={true}
-            row={false}
-          />
+          <View style={{ height: 350,  }}>
+            <ColorPicker
+              color={formData.colors[formData.activeColorIndex]}
+              onColorChange={handleColorChange}
+              thumbSize={30}
+              sliderSize={30}
+              noSnap={true}
+              row={false}
+            />
+          </View>
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

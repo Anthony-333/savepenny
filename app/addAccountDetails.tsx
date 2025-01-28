@@ -63,7 +63,7 @@ export default function AddAccountDetails() {
         <ScrollView
           className="flex-1"
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="p-4 space-y-6"
+          contentContainerClassName=""
         >
           {type === "Bank Account" && (
             <FormsBankAccount
