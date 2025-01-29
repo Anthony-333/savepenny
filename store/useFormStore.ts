@@ -13,9 +13,7 @@ interface FormData {
   isNetworkDropdownOpen: boolean;
   activeColorIndex: number;
   lastFourDigits: string;
-  expiryDate: string;
   showLastFourDigits: boolean;
-  showExpiryDate: boolean;
   category: string;
   currency: "₱" | "$";
   isCurrencyDropdownOpen: boolean;
@@ -46,9 +44,7 @@ const initialState: FormData = {
   isNetworkDropdownOpen: false,
   activeColorIndex: 0,
   lastFourDigits: "",
-  expiryDate: "",
   showLastFourDigits: true,
-  showExpiryDate: true,
   category: "",
   currency: "₱",
   isCurrencyDropdownOpen: false,

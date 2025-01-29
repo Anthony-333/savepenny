@@ -18,6 +18,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 import { useFormStore } from "@/store/useFormStore";
 import { CustomGradientSlider } from "@/app/components/addAccountForms/CustomGradientSlider";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 
 interface FormsBankAccountProps {
   type: string;
@@ -47,6 +54,10 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ["60%", "70%"];
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [expiryDate, setExpiryDate] = useState("");
+  const [showCardInfo, setShowCardInfo] = useState(true);
+  const rotateValue = useSharedValue(0);
 
   // Get all the state and actions from Zustand store
   const {
@@ -86,124 +97,221 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
     bottomSheetRef.current?.close();
   }, []);
 
+  const handleFlipCard = useCallback(() => {
+    rotateValue.value = withTiming(isFlipped ? 0 : 180, {
+      duration: 500,
+      easing: Easing.inOut(Easing.cubic),
+    });
+    setIsFlipped(!isFlipped);
+  }, [isFlipped]);
+
+  const frontAnimatedStyle = useAnimatedStyle(() => {
+    const rotateX = interpolate(rotateValue.value, [0, 180], [0, 180], "clamp");
+
+    return {
+      transform: [{ perspective: 400 }, { rotateY: `${rotateX}deg` }],
+      backfaceVisibility: "hidden",
+      opacity: interpolate(rotateValue.value, [0, 90], [1, 0], "clamp"),
+    };
+  }, []);
+
+  const backAnimatedStyle = useAnimatedStyle(() => {
+    const rotateX = interpolate(
+      rotateValue.value,
+      [0, 180],
+      [180, 360],
+      "clamp"
+    );
+
+    return {
+      transform: [{ perspective: 400 }, { rotateY: `${rotateX}deg` }],
+      backfaceVisibility: "hidden",
+      opacity: interpolate(rotateValue.value, [90, 180], [0, 1], "clamp"),
+    };
+  }, []);
+
+  const formatDisplayName = (name: string) => {
+    if (name.length >= 15) {
+      const words = name.split(' ');
+      if (words.length > 1) {
+        // If multiple words, take first letter of each word except the last word
+        return words
+          .slice(0, -1)
+          .map(word => word[0].toUpperCase())
+          .join('. ') + '. ' + words[words.length - 1];
+      }
+      // If single long word, truncate with ellipsis
+      return name.slice(0, 12) + '...';
+    }
+    return name;
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View className="p-5">
-        <LinearGradient
-          colors={formData.colors}
-          start={{ x: formData.sliderPosition[0] / 100, y: 0 }}
-          end={{ x: formData.sliderPosition[1] / 100, y: 0 }}
-          className="flex-col justify-between items-center w-full h-56"
-          style={{ borderRadius: 16, padding: 20 }}
-        >
-          <View className="flex-row items-center justify-between w-full">
-            <View className="flex-row items-center gap-2">
-              <FontAwesome name="bank" size={20} color="white" />
-              <UiText className="text-white font-bold text-lg">
-                {formData.bankDisplayName || "Select a Bank"}
-              </UiText>
-            </View>
-            <TouchableOpacity>
-            
-              <AntDesign name="retweet" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
+        {/* Card Container */}
+        <View style={{ height: 200 }}>
+          {/* Front of the card */}
+          <Animated.View
+            style={[
+              {
+                position: "absolute",
+                width: "100%",
+                zIndex: isFlipped ? 0 : 1,
+              },
+              frontAnimatedStyle,
+            ]}
+          >
+            <LinearGradient
+              colors={formData.colors}
+              start={{ x: formData.sliderPosition[0] / 100, y: 0 }}
+              end={{ x: formData.sliderPosition[1] / 100, y: 0 }}
+              className="flex-col justify-between items-center w-full h-56"
+              style={{ borderRadius: 16, padding: 20 }}
+            >
+              <View className="flex-row items-center justify-between w-full">
+                <View className="flex-row items-center gap-2">
+                  <FontAwesome name="bank" size={20} color="white" />
+                  <UiText className="text-white font-bold text-lg">
+                    {formData.bankDisplayName || "Select a Bank"}
+                  </UiText>
+                </View>
+                <TouchableOpacity onPress={handleFlipCard} activeOpacity={0.5}>
+                  <AntDesign name="retweet" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
 
-          <View className="w-full items-center">
-            <View className="flex-row items-center">
-              <Pressable
-                onPress={() =>
-                  setFormData({
-                    isCurrencyDropdownOpen: !formData.isCurrencyDropdownOpen,
-                  })
-                }
-                className="flex-row items-center"
-              >
-                <FontAwesome
-                  name={
-                    formData.isCurrencyDropdownOpen
-                      ? "chevron-up"
-                      : "chevron-down"
-                  }
-                  size={12}
-                  color="white"
-                />
-                <UiText className="text-white font-bold text-3xl mr-1">
-                  {formData.currency}
+              <View className="w-full items-center">
+                <View className="flex-row items-center">
+                  <Pressable
+                    onPress={() =>
+                      setFormData({
+                        isCurrencyDropdownOpen:
+                          !formData.isCurrencyDropdownOpen,
+                      })
+                    }
+                    className="flex-row items-center"
+                  >
+                    <FontAwesome
+                      name={
+                        formData.isCurrencyDropdownOpen
+                          ? "chevron-up"
+                          : "chevron-down"
+                      }
+                      size={12}
+                      color="white"
+                    />
+                    <UiText className="text-white font-bold text-3xl mr-1">
+                      {formData.currency}
+                    </UiText>
+                  </Pressable>
+                  <UiText className="text-white font-bold text-3xl">
+                    {formData.balance ? formatNumber(formData.balance) : "0.00"}
+                  </UiText>
+                </View>
+                <UiText className="text-white/70 text-sm">
+                  Available Balance
                 </UiText>
-              </Pressable>
-              <UiText className="text-white font-bold text-3xl">
-                {formData.balance ? formatNumber(formData.balance) : "0.00"}
-              </UiText>
-            </View>
-            <UiText className="text-white/70 text-sm">Available Balance</UiText>
-            {formData.isCurrencyDropdownOpen && (
-              <View className="absolute top-16 left-[35%] bg-white rounded-lg shadow-lg z-50">
-                <Pressable
-                  onPress={() => {
-                    setFormData({
-                      currency: "₱",
-                      isCurrencyDropdownOpen: false,
-                    });
-                  }}
-                  className="p-2 border-b border-gray-100"
-                >
-                  <UiText>₱ Peso</UiText>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    setFormData({
-                      currency: "$",
-                      isCurrencyDropdownOpen: false,
-                    });
-                  }}
-                  className="p-2"
-                >
-                  <UiText>$ Dollar</UiText>
-                </Pressable>
+                {formData.isCurrencyDropdownOpen && (
+                  <View className="absolute top-16 left-[35%] bg-white rounded-lg shadow-lg z-50">
+                    <Pressable
+                      onPress={() => {
+                        setFormData({
+                          currency: "₱",
+                          isCurrencyDropdownOpen: false,
+                        });
+                      }}
+                      className="p-2 border-b border-gray-100"
+                    >
+                      <UiText>₱ Peso</UiText>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setFormData({
+                          currency: "$",
+                          isCurrencyDropdownOpen: false,
+                        });
+                      }}
+                      className="p-2"
+                    >
+                      <UiText>$ Dollar</UiText>
+                    </Pressable>
+                  </View>
+                )}
               </View>
-            )}
-          </View>
 
-          <View className="w-full">
-            <UiText className="text-white font-bold text-lg mt-1">
-              {formData.showLastFourDigits
-                ? `**** **** **** ${formData.lastFourDigits || "1234"}`
-                : "**** **** **** ****"}
-            </UiText>
-          </View>
-
-          <View className="w-full flex-row justify-between">
-            <View>
-              <UiText className="text-white/70">Card Holder Name</UiText>
-              <UiText className="text-white">
-                {formData.name || "Enter Name"}
-              </UiText>
-            </View>
-            <View>
-              <UiText className="text-white/70">Expiry Date</UiText>
-              <UiText className="text-white">
-                {formData.showExpiryDate
-                  ? formData.expiryDate || "MM/YY"
-                  : "**/**"}
-              </UiText>
-            </View>
-
-            {formData.paymentNetwork && (
-              <View className="mt-2">
-                <FontAwesome
-                  name={
-                    formData.paymentNetwork === "visa"
-                      ? "cc-visa"
-                      : "cc-mastercard"
-                  }
-                  size={32}
-                  color="white"
-                />
+              <View className="w-full">
+                <UiText className="text-white font-bold text-lg mt-1">
+                  {formData.showLastFourDigits
+                    ? `**** **** **** ${formData.lastFourDigits || "1234"}`
+                    : "**** **** **** ****"}
+                </UiText>
               </View>
-            )}
-          </View>
-        </LinearGradient>
+
+              <View className="w-full flex-row justify-between">
+                <View>
+                  <UiText className="text-white/70">Card Holder Name</UiText>
+                  <UiText className="text-white">
+                    {formData.name ? formatDisplayName(formData.name) : "Enter Name"}
+                  </UiText>
+                </View>
+                <View>
+                  <UiText className="text-white/70">Expiry Date</UiText>
+                  <UiText className="text-white">
+                    {showCardInfo ? expiryDate || "MM/YY" : "**/**"}
+                  </UiText>
+                </View>
+
+                {formData.paymentNetwork && (
+                  <View className="mt-2">
+                    <FontAwesome
+                      name={
+                        formData.paymentNetwork === "visa"
+                          ? "cc-visa"
+                          : "cc-mastercard"
+                      }
+                      size={32}
+                      color="white"
+                    />
+                  </View>
+                )}
+              </View>
+            </LinearGradient>
+          </Animated.View>
+
+          {/* Back of the card */}
+          <Animated.View
+            style={[
+              {
+                position: "absolute",
+                width: "100%",
+                zIndex: isFlipped ? 1 : 0,
+              },
+              backAnimatedStyle,
+            ]}
+          >
+            <LinearGradient
+              colors={formData.colors}
+              start={{ x: formData.sliderPosition[0] / 100, y: 0 }}
+              end={{ x: formData.sliderPosition[1] / 100, y: 0 }}
+              className="flex-col justify-between items-center w-full h-56"
+              style={{ borderRadius: 16, padding: 20 }}
+            >
+              <View className="flex-row items-center justify-between w-full">
+                <UiText className="text-white font-bold text-lg">Notes</UiText>
+                <TouchableOpacity onPress={handleFlipCard} activeOpacity={0.5}>
+                  <AntDesign name="retweet" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              <View className="flex-1 justify-center items-center px-2">
+                <UiText className="text-white text-center" numberOfLines={6}>
+                  {formData.notes || "No notes added"}
+                </UiText>
+              </View>
+            </LinearGradient>
+          </Animated.View>
+        </View>
         {/* Color Selection */}
         <View className="py-2">
           <View className="flex-row justify-between items-center">
@@ -229,128 +337,133 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
             />
           </View>
         </View>
-
-        <View className="space-y-4 mt-4">
-          {/* Account Type Info */}
-          <View className="space-y-2">
-            <UiText className="text-gray-900 font-medium px-1">
-              Account Type
-            </UiText>
-            <View className="p-4 bg-gray-50 rounded-2xl">
-              <UiText className="text-gray-900">{type}</UiText>
-            </View>
-          </View>
-
-          {/* Bank Selection */}
-          <View className="space-y-2">
-            <UiText className="text-gray-900 font-medium px-1">
-              Select Bank
-            </UiText>
-            <Pressable
-              onPress={() => {
-                router.push({
-                  pathname: "/selectBank",
-                  params: {
-                    onSelect: `(bank) => {
-                      setBank(bank.name, bank.displayName);
-                    }`,
-                  },
-                });
-              }}
-              className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
-            >
-              <UiText
-                className={formData.bankId ? "text-gray-900" : "text-gray-500"}
-              >
-                {formData.bankDisplayName || "Select a bank"}
-              </UiText>
-              <FontAwesome name="chevron-right" size={16} color="#6B7280" />
-            </Pressable>
-          </View>
-
-          {/* Payment Network Selection */}
-          <View className="space-y-2">
-            <UiText className="text-gray-900 font-medium px-1">
-              Payment Network
-            </UiText>
-            <Pressable
-              onPress={toggleNetworkDropdown}
-              className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
-            >
-              <UiText
-                className={
-                  formData.paymentNetwork ? "text-gray-900" : "text-gray-500"
-                }
-              >
-                {formData.paymentNetwork
-                  ? formData.paymentNetwork.charAt(0).toUpperCase() +
-                    formData.paymentNetwork.slice(1)
-                  : "Select payment network"}
-              </UiText>
-              <FontAwesome
-                name={
-                  formData.isNetworkDropdownOpen ? "chevron-up" : "chevron-down"
-                }
-                size={16}
-                color="#6B7280"
-              />
-            </Pressable>
-
-            {formData.isNetworkDropdownOpen && (
-              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200 mt-1">
-                <Pressable
-                  onPress={() => setPaymentNetwork("visa")}
-                  className="flex-row items-center p-4 border-b border-gray-100"
-                >
-                  <FontAwesome
-                    name="cc-visa"
-                    size={24}
-                    color="#1a1f36"
-                    className="mr-3"
-                  />
-                  <UiText className="text-gray-900 ml-3">Visa</UiText>
-                </Pressable>
-                <Pressable
-                  onPress={() => setPaymentNetwork("mastercard")}
-                  className="flex-row items-center p-4"
-                >
-                  <FontAwesome
-                    name="cc-mastercard"
-                    size={24}
-                    color="#1a1f36"
-                    className="mr-3"
-                  />
-                  <UiText className="text-gray-900 ml-3">Mastercard</UiText>
-                </Pressable>
-              </View>
-            )}
-          </View>
-
-          {/* Last 4 Digits */}
-          <View className="space-y-2">
-            <View className="flex-row items-center justify-between">
+        {/* Static Form Content */}
+        <View className="mt-4">
+          <View className="space-y-4">
+            {/* Account Type Info */}
+            <View className="space-y-2">
               <UiText className="text-gray-900 font-medium px-1">
-                Last 4 Digits
+                Account Type
+              </UiText>
+              <View className="p-4 bg-gray-50 rounded-2xl">
+                <UiText className="text-gray-900">{type}</UiText>
+              </View>
+            </View>
+
+            {/* Bank Selection */}
+            <View className="space-y-2">
+              <UiText className="text-gray-900 font-medium px-1">
+                Select Bank
               </UiText>
               <Pressable
-                onPress={() =>
-                  setFormData({
-                    showLastFourDigits: !formData.showLastFourDigits,
-                  })
-                }
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                onPress={() => {
+                  router.push({
+                    pathname: "/selectBank",
+                    params: {
+                      onSelect: `(bank) => {
+                        setBank(bank.name, bank.displayName);
+                      }`,
+                    },
+                  });
+                }}
+                className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
               >
+                <UiText
+                  className={
+                    formData.bankId ? "text-gray-900" : "text-gray-500"
+                  }
+                >
+                  {formData.bankDisplayName || "Select a bank"}
+                </UiText>
+                <FontAwesome name="chevron-right" size={16} color="#6B7280" />
+              </Pressable>
+            </View>
+
+            {/* Payment Network Selection */}
+            <View className="space-y-2">
+              <UiText className="text-gray-900 font-medium px-1">
+                Payment Network
+              </UiText>
+              <Pressable
+                onPress={toggleNetworkDropdown}
+                className="flex-row items-center justify-between p-4 bg-gray-50 rounded-2xl"
+              >
+                <UiText
+                  className={
+                    formData.paymentNetwork ? "text-gray-900" : "text-gray-500"
+                  }
+                >
+                  {formData.paymentNetwork
+                    ? formData.paymentNetwork.charAt(0).toUpperCase() +
+                      formData.paymentNetwork.slice(1)
+                    : "Select payment network"}
+                </UiText>
                 <FontAwesome
-                  name={formData.showLastFourDigits ? "eye" : "eye-slash"}
-                  size={18}
+                  name={
+                    formData.isNetworkDropdownOpen
+                      ? "chevron-up"
+                      : "chevron-down"
+                  }
+                  size={16}
                   color="#6B7280"
                 />
               </Pressable>
+
+              {formData.isNetworkDropdownOpen && (
+                <View className="bg-white rounded-2xl overflow-hidden border border-gray-200 mt-1">
+                  <Pressable
+                    onPress={() => setPaymentNetwork("visa")}
+                    className="flex-row items-center p-4 border-b border-gray-100"
+                  >
+                    <FontAwesome
+                      name="cc-visa"
+                      size={24}
+                      color="#1a1f36"
+                      className="mr-3"
+                    />
+                    <UiText className="text-gray-900 ml-3">Visa</UiText>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setPaymentNetwork("mastercard")}
+                    className="flex-row items-center p-4"
+                  >
+                    <FontAwesome
+                      name="cc-mastercard"
+                      size={24}
+                      color="#1a1f36"
+                      className="mr-3"
+                    />
+                    <UiText className="text-gray-900 ml-3">Mastercard</UiText>
+                  </Pressable>
+                </View>
+              )}
             </View>
-            {formData.showLastFourDigits ? (
+
+            {/* Last 4 Digits */}
+            <View className="space-y-2">
+              <View className="flex-row items-center justify-between">
+                <UiText className="text-gray-900 font-medium px-1">
+                  Last 4 Digits
+                </UiText>
+                <Pressable
+                  onPress={() => {
+                    setFormData({
+                      showLastFourDigits: !formData.showLastFourDigits
+                    });
+                  }}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <FontAwesome
+                    name={formData.showLastFourDigits ? "eye" : "eye-slash"}
+                    size={18}
+                    color="#6B7280"
+                  />
+                </Pressable>
+              </View>
               <UiTextInput
                 value={formData.lastFourDigits}
                 onChangeText={(text) =>
+                  formData.showLastFourDigits &&
                   setFormData({
                     lastFourDigits: text.replace(/[^0-9]/g, "").slice(0, 4),
                   })
@@ -358,127 +471,121 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
                 placeholder="Enter last 4 digits"
                 keyboardType="numeric"
                 maxLength={4}
+                editable={formData.showLastFourDigits}
+                className={!formData.showLastFourDigits ? "opacity-50" : ""}
               />
-            ) : (
-              <View className="p-4 bg-gray-50 rounded-2xl">
-                <UiText className="text-gray-500">Hidden</UiText>
-              </View>
-            )}
-          </View>
-
-          {/* Account Name */}
-          <UiTextInput
-            label="Account Name"
-            value={formData.name}
-            onChangeText={(text) => setFormData({ name: text })}
-            placeholder="Enter account name"
-          />
-
-          {/* Current Balance */}
-          <UiTextInput
-            label="Current Balance"
-            value={formData.balance}
-            onChangeText={(text) => {
-              const cleanNum = text.replace(/[^0-9.]/g, "");
-              setFormData({ balance: cleanNum });
-            }}
-            placeholder="0.00"
-            keyboardType="decimal-pad"
-          />
-
-          {/* Expiry Date */}
-          <View className="space-y-2">
-            <View className="flex-row items-center justify-between">
-              <UiText className="text-gray-900 font-medium px-1">
-                Expiry Date
-              </UiText>
-              <Pressable
-                onPress={() =>
-                  setFormData({ showExpiryDate: !formData.showExpiryDate })
-                }
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <FontAwesome
-                  name={formData.showExpiryDate ? "eye" : "eye-slash"}
-                  size={18}
-                  color="#6B7280"
-                />
-              </Pressable>
             </View>
-            {formData.showExpiryDate ? (
+
+            {/* Account Name */}
+            <UiTextInput
+              label="Account Name"
+              value={formData.name}
+              onChangeText={(text) => setFormData({ name: text.slice(0, 35) })}
+              placeholder="Enter account name"
+              maxLength={35}
+            />
+
+            {/* Current Balance */}
+            <UiTextInput
+              label="Current Balance"
+              value={formData.balance}
+              onChangeText={(text) => {
+                const cleanNum = text.replace(/[^0-9.]/g, "");
+                setFormData({ balance: cleanNum });
+              }}
+              placeholder="0.00"
+              keyboardType="decimal-pad"
+            />
+
+            {/* Expiry Date */}
+            <View className="space-y-2">
+              <View className="flex-row items-center justify-between">
+                <UiText className="text-gray-900 font-medium px-1">
+                  Expiry Date
+                </UiText>
+                <Pressable
+                  onPress={() => setShowCardInfo(!showCardInfo)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <FontAwesome
+                    name={showCardInfo ? "eye" : "eye-slash"}
+                    size={18}
+                    color="#6B7280"
+                  />
+                </Pressable>
+              </View>
               <UiTextInput
-                value={formData.expiryDate}
+                value={expiryDate}
                 onChangeText={(text) => {
-                  let formatted = text.replace(/[^0-9]/g, "");
-                  if (formatted.length >= 2) {
-                    formatted =
-                      formatted.slice(0, 2) + "/" + formatted.slice(2, 4);
+                  if (showCardInfo) {
+                    let formatted = text.replace(/[^0-9]/g, "");
+                    if (formatted.length >= 2) {
+                      formatted = formatted.slice(0, 2) + "/" + formatted.slice(2, 4);
+                    }
+                    setExpiryDate(formatted);
                   }
-                  setFormData({ expiryDate: formatted });
                 }}
                 placeholder="MM/YY"
                 maxLength={5}
+                editable={showCardInfo}
+                className={!showCardInfo ? "opacity-50" : ""}
               />
-            ) : (
-              <View className="p-4 bg-gray-50 rounded-2xl">
-                <UiText className="text-gray-500">Hidden</UiText>
-              </View>
-            )}
-          </View>
+            </View>
 
-          {/* Notes */}
-          <View className="space-y-2">
-            <UiText className="text-gray-900 font-medium px-1">Notes</UiText>
-            <UiTextInput
-              value={formData.notes}
-              onChangeText={(text) => setFormData({ notes: text })}
-              placeholder="Add notes (optional)"
-              multiline
-              numberOfLines={4}
-              className="min-h-[120px]"
-              textAlignVertical="top"
-            />
+            {/* Notes */}
+            <View className="space-y-2">
+              <UiText className="text-gray-900 font-medium px-1">Notes</UiText>
+              <UiTextInput
+                value={formData.notes}
+                onChangeText={(text) => setFormData({ notes: text })}
+                placeholder="Add notes (optional)"
+                multiline
+                numberOfLines={4}
+                className="min-h-[120px]"
+                textAlignVertical="top"
+              />
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Color Picker Bottom Sheet */}
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-        style={{
-          shadowColor: "#000000",
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.25,
-          shadowRadius: 4,
-          elevation: 5,
-          width: "100%",
-        }}
-      >
-        <BottomSheetView className="flex-1 p-4">
-          <View className="flex-row items-center justify-between mb-4">
-            <UiText className="text-xl font-semibold">Select Color</UiText>
-            <Pressable
-              onPress={handleCloseColorPicker}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <FontAwesome name="times" size={24} color="#000" />
-            </Pressable>
-          </View>
-          <View style={{ height: 350 }}>
-            <ColorPicker
-              color={formData.colors[formData.activeColorIndex]}
-              onColorChange={handleColorChange}
-              thumbSize={30}
-              sliderSize={30}
-              noSnap={true}
-              row={false}
-            />
-          </View>
-        </BottomSheetView>
-      </BottomSheet>
+        {/* Color Picker Bottom Sheet */}
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={-1}
+          snapPoints={snapPoints}
+          enablePanDownToClose
+          style={{
+            shadowColor: "#000000",
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+            width: "100%",
+          }}
+        >
+          <BottomSheetView className="flex-1 p-4">
+            <View className="flex-row items-center justify-between mb-4">
+              <UiText className="text-xl font-semibold">Select Color</UiText>
+              <Pressable
+                onPress={handleCloseColorPicker}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <FontAwesome name="times" size={24} color="#000" />
+              </Pressable>
+            </View>
+            <View style={{ height: 350 }}>
+              <ColorPicker
+                color={formData.colors[formData.activeColorIndex]}
+                onColorChange={handleColorChange}
+                thumbSize={30}
+                sliderSize={30}
+                noSnap={true}
+                row={false}
+              />
+            </View>
+          </BottomSheetView>
+        </BottomSheet>
+      </View>
     </GestureHandlerRootView>
   );
 };
