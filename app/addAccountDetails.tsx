@@ -2,7 +2,7 @@ import { View, ScrollView, Pressable } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Uiview from "@/util/Uiview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import UiText from "@/util/UiText";
 
@@ -18,7 +18,14 @@ export default function AddAccountDetails() {
   }>();
 
   // Get form data and submit function from Zustand store
-  const { submitForm } = useFormStore();
+  const { submitForm, setFormData } = useFormStore();
+
+  // Set category in form data when component mounts
+  useEffect(() => {
+    if (category) {
+      setFormData({ category });
+    }
+  }, [category]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -54,7 +61,6 @@ export default function AddAccountDetails() {
           {type === "Bank Account" && (
             <FormsBankAccount
               type={type}
-              category={category}
             />
           )}
         </ScrollView>

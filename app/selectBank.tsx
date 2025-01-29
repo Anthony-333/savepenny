@@ -113,7 +113,7 @@ export default function SelectBank() {
     setBank(bank.name, bank.displayName);
     router.back();
     if (onSelect) {
-      console.log('Executing onSelect with bank:', bank);
+   
       const selectFn = new Function("bank", onSelect);
       selectFn(bank);
     }

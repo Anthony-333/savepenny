@@ -12,6 +12,13 @@ interface FormData {
   sliderPosition: [number, number];
   isNetworkDropdownOpen: boolean;
   activeColorIndex: number;
+  lastFourDigits: string;
+  expiryDate: string;
+  showLastFourDigits: boolean;
+  showExpiryDate: boolean;
+  category: string;
+  currency: "₱" | "$";
+  isCurrencyDropdownOpen: boolean;
 }
 
 interface FormStore {
@@ -38,6 +45,13 @@ const initialState: FormData = {
   sliderPosition: [0, 100],
   isNetworkDropdownOpen: false,
   activeColorIndex: 0,
+  lastFourDigits: "",
+  expiryDate: "",
+  showLastFourDigits: true,
+  showExpiryDate: true,
+  category: "",
+  currency: "₱",
+  isCurrencyDropdownOpen: false,
 };
 
 export const useFormStore = create<FormStore>((set, get) => ({
