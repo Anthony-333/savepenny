@@ -6,8 +6,8 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
@@ -21,9 +21,10 @@
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-navigation/bottom-tabs": "7.0.0",
     "@react-navigation/native": "7.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "convex": "^1.18.2",
     "expo": "~52.0.0-preview.23",
-    "expo-blur": "~13.0.2",
+    "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.2",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@react-native-community/cli": "latest",
     "@types/expo": "^32.0.13",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",

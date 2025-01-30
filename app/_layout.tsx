@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { MMKV, Mode } from 'react-native-mmkv'
 
 import "../global.css";
 import { View } from "react-native";
@@ -16,6 +17,9 @@ import StoreProvider from "@/store/useStore";
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
+
+
+export const storage = new MMKV()
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
