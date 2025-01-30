@@ -55,7 +55,6 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ["60%", "70%"];
   const [isFlipped, setIsFlipped] = useState(false);
-  const [expiryDate, setExpiryDate] = useState("");
   const [showCardInfo, setShowCardInfo] = useState(true);
   const rotateValue = useSharedValue(0);
 
@@ -240,15 +239,9 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
                 )}
               </View>
 
-              <View className="w-full">
-                <UiText className="text-white font-bold text-lg mt-1">
-                  {formData.showLastFourDigits
-                    ? `**** **** **** ${formData.lastFourDigits || "1234"}`
-                    : "**** **** **** ****"}
-                </UiText>
-              </View>
+              
 
-              <View className="w-full flex-row justify-between">
+              <View className="w-full flex-row justify-between border-t border-white/40 pt-2">
                 <View>
                   <UiText className="text-white/70">Card Holder Name</UiText>
                   <UiText className="text-white">
@@ -256,9 +249,9 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
                   </UiText>
                 </View>
                 <View>
-                  <UiText className="text-white/70">Expiry Date</UiText>
-                  <UiText className="text-white">
-                    {showCardInfo ? expiryDate || "MM/YY" : "**/**"}
+                  <UiText className="text-white/70">Last 4 Digits</UiText>
+                  <UiText className="text-white text-right">
+                    {formData.showLastFourDigits ? formData.lastFourDigits || "_ _ _ _" : "* * * *"}
                   </UiText>
                 </View>
 
@@ -496,41 +489,6 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
               placeholder="0.00"
               keyboardType="decimal-pad"
             />
-
-            {/* Expiry Date */}
-            <View className="space-y-2">
-              <View className="flex-row items-center justify-between">
-                <UiText className="text-gray-900 font-medium px-1">
-                  Expiry Date
-                </UiText>
-                <Pressable
-                  onPress={() => setShowCardInfo(!showCardInfo)}
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                  <FontAwesome
-                    name={showCardInfo ? "eye" : "eye-slash"}
-                    size={18}
-                    color="#6B7280"
-                  />
-                </Pressable>
-              </View>
-              <UiTextInput
-                value={expiryDate}
-                onChangeText={(text) => {
-                  if (showCardInfo) {
-                    let formatted = text.replace(/[^0-9]/g, "");
-                    if (formatted.length >= 2) {
-                      formatted = formatted.slice(0, 2) + "/" + formatted.slice(2, 4);
-                    }
-                    setExpiryDate(formatted);
-                  }
-                }}
-                placeholder="MM/YY"
-                maxLength={5}
-                editable={showCardInfo}
-                className={!showCardInfo ? "opacity-50" : ""}
-              />
-            </View>
 
             {/* Notes */}
             <View className="space-y-2">

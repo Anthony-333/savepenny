@@ -17,6 +17,8 @@ interface FormData {
   category: string;
   currency: "₱" | "$";
   isCurrencyDropdownOpen: boolean;
+  expiryDate: string;
+  showExpiryDate: boolean;
 }
 
 interface FormStore {
@@ -48,6 +50,8 @@ const initialState: FormData = {
   category: "",
   currency: "₱",
   isCurrencyDropdownOpen: false,
+  expiryDate: "",
+  showExpiryDate: true,
 };
 
 export const useFormStore = create<FormStore>((set, get) => ({
