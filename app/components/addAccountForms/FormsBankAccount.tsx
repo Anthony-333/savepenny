@@ -18,6 +18,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 import { useFormStore } from "@/store/useFormStore";
 import { CustomGradientSlider } from "@/app/components/addAccountForms/CustomGradientSlider";
+import { storage } from "@/app/_layout";
+import * as Haptics from 'expo-haptics';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -143,6 +145,41 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
       return name.slice(0, 12) + '...';
     }
     return name;
+  };
+
+  const handleSave = () => {
+    try {
+      // Generate a unique ID for the account
+      const accountId = Date.now().toString();
+      
+      // Create the account data object
+      const accountData = {
+        id: accountId,
+        type,
+        ...formData,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Get existing accounts or initialize empty array
+      const existingAccounts = storage.getString('accounts');
+      const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
+      
+      // Add new account to the array
+      accounts.push(accountData);
+      
+      // Save updated accounts array
+      storage.set('accounts', JSON.stringify(accounts));
+      
+      // Provide haptic feedback for success
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      // Navigate back to dashboard
+      router.push('/(dashboard)');
+    } catch (error) {
+      console.error('Error saving account:', error);
+      // Provide haptic feedback for error
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
   };
 
   return (
@@ -504,6 +541,18 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
               />
             </View>
           </View>
+        </View>
+
+        {/* Add Save Button at the bottom */}
+        <View className="mt-6 mb-10">
+          <UiButton
+            title="Save Account"
+            onPress={handleSave}
+            className="bg-blue-600 py-4 rounded-2xl"
+            textClassName="text-white font-semibold text-lg"
+          >
+            Save Account
+          </UiButton>
         </View>
 
         {/* Color Picker Bottom Sheet */}

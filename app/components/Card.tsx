@@ -1,12 +1,9 @@
 import {
   View,
-  Text,
-  Image,
-  useWindowDimensions,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useCallback, useState } from "react";
-import { DataType } from "../../assets/data/data";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -17,14 +14,31 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import Entypo from "@expo/vector-icons/Entypo";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import UiText from "@/util/UiText";
+import { LinearGradient } from "expo-linear-gradient";
+
+interface SavedAccount {
+  id: string;
+  type: string;
+  name: string;
+  balance: string;
+  notes: string;
+  bankId?: string;
+  bankDisplayName?: string;
+  colors: [string, string];
+  sliderPosition: [number, number];
+  lastFourDigits: string;
+  showLastFourDigits: boolean;
+  currency: string;
+  paymentNetwork?: "visa" | "mastercard";
+}
+
 type Props = {
-  newData: DataType[];
-  setNewData: React.Dispatch<React.SetStateAction<DataType[]>>;
+  accounts: SavedAccount[];
+  setAccounts: React.Dispatch<React.SetStateAction<SavedAccount[]>>;
   maxVisibleItems: number;
-  item: DataType;
+  account: SavedAccount;
   index: number;
   dataLength: number;
   animatedValue: SharedValue<number>;
@@ -33,10 +47,10 @@ type Props = {
 };
 
 const Card = ({
-  newData,
-  setNewData,
+  accounts,
+  setAccounts,
   maxVisibleItems,
-  item,
+  account,
   index,
   dataLength,
   animatedValue,
@@ -88,15 +102,9 @@ const Card = ({
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
-      // e.translationX is the distance of the swipe
-      // e.translationX is positive if the swipe is to the right
-      // isSwipeRight is true if the swipe is to the right
       const isSwipeRight = e.translationX > 0;
-
-      // direction 1 is right, -1 is left
       direction.value = isSwipeRight ? 1 : -1;
 
-      // If the current index is the same as the index of the card
       if (currentIndex === index) {
         translateX.value = e.translationX;
         animatedValue.value = interpolate(
@@ -110,11 +118,9 @@ const Card = ({
       if (currentIndex === index) {
         if (Math.abs(e.translationX) > 150 || Math.abs(e.velocityX) > 1000) {
           runOnJS(handleCardSwipe)();
-          // Update the current index first
           runOnJS(setCurrentIndex)(currentIndex + 1);
-          // Then update the data and animate
           translateX.value = withTiming(width * direction.value, {}, () => {
-            runOnJS(setNewData)([...newData, newData[currentIndex]]);
+            runOnJS(setAccounts)([...accounts, accounts[currentIndex]]);
           });
           animatedValue.value = withTiming(currentIndex + 1);
         } else {
@@ -164,10 +170,24 @@ const Card = ({
     };
   });
 
+  const formatDisplayName = (name: string) => {
+    if (name.length >= 15) {
+      const words = name.split(' ');
+      if (words.length > 1) {
+        return words
+          .slice(0, -1)
+          .map(word => word[0].toUpperCase())
+          .join('. ') + '. ' + words[words.length - 1];
+      }
+      return name.slice(0, 12) + '...';
+    }
+    return name;
+  };
+
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
-        className="absolute w-full h-[200] flex flex-col justify-between"
+        className="absolute w-full h-56"
         style={[
           {
             zIndex: dataLength - index,
@@ -175,102 +195,111 @@ const Card = ({
           animatedStyle,
         ]}
       >
-        <Animated.View
-          style={[
-            {
-              padding: 20,
-              backgroundColor: "white",
-              borderRadius: 25,
-              width: "100%",
-              height: "100%",
-              zIndex: 2,
-              borderWidth: 2,
-              borderColor: "#c2e0c1",
-              shadowColor: "#bfbfbf",
-              shadowOffset: {
-                width: 0,
-                height: 11,
-              },
-              shadowOpacity: 0.55,
-              shadowRadius: 14.78,
-              elevation: 22,
-            },
-            frontAnimatedStyle,
-          ]}
-        >
-          <View style={[]}>
-            <View className="flex flex-row justify-between">
-              <View>
-                <UiText className="font-semibold text-2xl ">Salary</UiText>
-              </View>
-
-              <TouchableOpacity onPress={handleFlipCard}>
-                <FontAwesome5 name="exchange-alt" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-            <View className="">
-              <UiText className="text-4xl font-bold text-center">
-                Php 50,000
-              </UiText>
-              <UiText className="text-center">Total Balance</UiText>
-            </View>
-            <View className="flex flex-row justify-between">
-              <View className="w-[30%] flex flex-col items-center">
-                <View className="flex flex-row items-center gap-1">
-                  <FontAwesome5 name="arrow-up" size={15} color="green" />
-                  <UiText className="text-xl">Income</UiText>
-                </View>
-
-                <UiText className="font-semibold">₱ 50,000</UiText>
-              </View>
-
-              <View className="w-[30%] flex flex-col items-center">
-                <View className="flex flex-row items-center gap-1">
-                  <FontAwesome5 name="arrow-down" size={15} color="red" />
-                  <UiText className="text-xl">Expense</UiText>
-                </View>
-
-                <UiText className="font-semibold">₱ 10,000</UiText>
-              </View>
-            </View>
-          </View>
-        </Animated.View>
-
+        {/* Front of the card */}
         <Animated.View
           style={[
             {
               position: "absolute",
-              padding: 20,
-              backgroundColor: "white",
-              borderRadius: 25,
               width: "100%",
               height: "100%",
-              zIndex: 2,
-              borderWidth: 2,
-              borderColor: "#c2e0c1",
-              shadowColor: "#bfbfbf",
-              shadowOffset: {
-                width: 0,
-                height: 11,
-              },
-              shadowOpacity: 0.55,
-              shadowRadius: 14.78,
-              elevation: 22,
+              zIndex: isFlipped ? 0 : 1,
+            },
+            frontAnimatedStyle,
+          ]}
+        >
+          <LinearGradient
+            colors={account.colors}
+            start={{ x: account.sliderPosition[0] / 100, y: 0 }}
+            end={{ x: account.sliderPosition[1] / 100, y: 0 }}
+            className="flex-col justify-between items-center w-full h-full rounded-2xl p-5"
+          >
+            <View className="flex-row items-center justify-between w-full">
+              <View className="flex-row items-center gap-2">
+                <FontAwesome name="bank" size={20} color="white" />
+                <UiText className="text-white font-bold text-lg">
+                  {account.bankDisplayName || "Bank Account"}
+                </UiText>
+              </View>
+              <TouchableOpacity onPress={handleFlipCard} activeOpacity={0.5}>
+                <AntDesign name="retweet" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="w-full items-center">
+              <View className="flex-row items-center">
+                <UiText className="text-white font-bold text-3xl mr-1">
+                  {account.currency}
+                </UiText>
+                <UiText className="text-white font-bold text-3xl">
+                  {account.balance || "0.00"}
+                </UiText>
+              </View>
+              <UiText className="text-white/70 text-sm">
+                Available Balance
+              </UiText>
+            </View>
+
+            <View className="w-full flex-row justify-between border-t border-white/40 pt-2">
+              <View>
+                <UiText className="text-white/70">Card Holder Name</UiText>
+                <UiText className="text-white">
+                  {formatDisplayName(account.name) || "No Name"}
+                </UiText>
+              </View>
+              <View>
+                <UiText className="text-white/70">Last 4 Digits</UiText>
+                <UiText className="text-white text-right">
+                  {account.showLastFourDigits ? account.lastFourDigits : "****"}
+                </UiText>
+              </View>
+              {account.paymentNetwork && (
+                <View className="mt-2">
+                  <FontAwesome
+                    name={
+                      account.paymentNetwork === "visa"
+                        ? "cc-visa"
+                        : "cc-mastercard"
+                    }
+                    size={32}
+                    color="white"
+                  />
+                </View>
+              )}
+            </View>
+          </LinearGradient>
+        </Animated.View>
+
+        {/* Back of the card */}
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              zIndex: isFlipped ? 1 : 0,
             },
             backAnimatedStyle,
           ]}
         >
-          <View className="flex flex-row justify-between">
-            <TouchableOpacity onPress={handleFlipCard}>
-              <FontAwesome5 name="exchange-alt" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-          <View className="flex-1 justify-center items-center">
-            <UiText className="text-2xl font-bold">Additional Details</UiText>
-            <UiText className="text-center mt-2">
-              More information about the transaction
-            </UiText>
-          </View>
+          <LinearGradient
+            colors={account.colors}
+            start={{ x: account.sliderPosition[0] / 100, y: 0 }}
+            end={{ x: account.sliderPosition[1] / 100, y: 0 }}
+            className="flex-col justify-between items-center w-full h-full rounded-2xl p-5"
+          >
+            <View className="flex-row items-center justify-between w-full">
+              <UiText className="text-white font-bold text-lg">Notes</UiText>
+              <TouchableOpacity onPress={handleFlipCard} activeOpacity={0.5}>
+                <AntDesign name="retweet" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-1 justify-center items-center px-2">
+              <UiText className="text-white text-center" numberOfLines={6}>
+                {account.notes || "No notes added"}
+              </UiText>
+            </View>
+          </LinearGradient>
         </Animated.View>
       </Animated.View>
     </GestureDetector>

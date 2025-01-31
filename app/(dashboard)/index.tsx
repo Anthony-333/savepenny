@@ -21,35 +21,41 @@ import Activity from "../components/Activity";
 import Uiview from "../../util/Uiview";
 import UiText from "@/util/UiText";
 import EmptyWidget from "../components/EmptyWidget";
+import { storage } from "@/app/_layout";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
+
+interface SavedAccount {
+  id: string;
+  type: string;
+  name: string;
+  balance: string;
+  notes: string;
+  bankId?: string;
+  bankDisplayName?: string;
+  colors: [string, string];
+  sliderPosition: [number, number];
+  lastFourDigits: string;
+  showLastFourDigits: boolean;
+  currency: string;
+  paymentNetwork?: "visa" | "mastercard";
+}
 
 const index = () => {
-  const [newData, setNewData] = useState([...data, ...data]);
+  const router = useRouter();
+  const [savedAccounts, setSavedAccounts] = useState<SavedAccount[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [activityIndex, setActivityIndex] = useState(0);
   const animatedValue = useSharedValue(0);
-  const MAX = 3;
+  const MAX_VISIBLE_ITEMS = 3;
 
-  const animatedStyle = useAnimatedStyle(() => {
-    if (animatedValue.value > currentIndex + 0.5) {
-      runOnJS(setActivityIndex)(currentIndex + 1);
-    } else {
-      runOnJS(setActivityIndex)(currentIndex);
-    }
-    const opacity = interpolate(
-      animatedValue.value,
-      [currentIndex, currentIndex + 0.3, currentIndex + 0.8, currentIndex + 1],
-      [1, 0, 0, 1],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      opacity: opacity,
-    };
-  });
+  useEffect(() => {
+    const accounts = JSON.parse(storage.getString('accounts') || '[]');
+    setSavedAccounts(accounts);
+  }, []);
 
   return (
     <Uiview paddingTop={0} className="flex-1">
-  
       <View style={{ zIndex: 1 }}>
         <HomeHeader />
       </View>
@@ -58,52 +64,45 @@ const index = () => {
         className="flex mb-20 mx-5"
         stickyHeaderIndices={[0]}
       >
-        <View className="my-3">
+        <View className="my-3 flex-row justify-between items-center">
           <UiText className="font-bold text-2xl">Home</UiText>
+          <TouchableOpacity 
+            onPress={() => router.push("/addAccount")}
+            className="bg-blue-600 w-10 h-10 rounded-full items-center justify-center"
+            activeOpacity={0.7}
+          >
+            <AntDesign name="plus" size={24} color="white" />
+          </TouchableOpacity>
         </View>
 
         <View className="flex items-center h-[200]" style={{ zIndex: 1 }}>
-          <EmptyWidget type="account" />
-
-          {/* {newData.map((item, index) => {
-            if (index > currentIndex + MAX || index < currentIndex) {
-              return null;
-            }
-            return (
-              <Card
-                newData={newData}
-                setNewData={setNewData}
-                maxVisibleItems={MAX}
-                item={item}
-                index={index}
-                dataLength={newData.length}
-                animatedValue={animatedValue}
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-                key={index}
-              />
-            );
-          })} */}
+          {savedAccounts.length === 0 ? (
+            <EmptyWidget type="account" />
+          ) : (
+            savedAccounts.map((account, index) => {
+              if (index > currentIndex + MAX_VISIBLE_ITEMS || index < currentIndex) {
+                return null;
+              }
+              return (
+                <Card
+                  key={account.id}
+                  accounts={savedAccounts}
+                  setAccounts={setSavedAccounts}
+                  maxVisibleItems={MAX_VISIBLE_ITEMS}
+                  account={account}
+                  index={index}
+                  dataLength={savedAccounts.length}
+                  animatedValue={animatedValue}
+                  currentIndex={currentIndex}
+                  setCurrentIndex={setCurrentIndex}
+                />
+              );
+            })
+          )}
         </View>
 
         <View className="">
-          {/* add new feature component here */}
           <EmptyWidget type="features" />
-          {/* <View className="flex bg-white mt-7 p-5 rounded-3xl border border-gray-100 shadow-slate-200">
-            <View className="flex flex-row justify-between items-center">
-              <UiText className="text-2xl font-bold">Transactions</UiText>
-
-              <TouchableOpacity>
-                <UiText className="color-[#3e9c35]">view all</UiText>
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.activityContainer]} className="w-full">
-              {newData[currentIndex].activity.slice(0, 5).map((item, index) => {
-                return <Activity item={item} key={index} />;
-              })}
-            </View>
-          </View> */}
         </View>
       </ScrollView>
     </Uiview>

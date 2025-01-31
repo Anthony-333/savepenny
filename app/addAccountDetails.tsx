@@ -9,6 +9,7 @@ import UiText from "@/util/UiText";
 import FormsBankAccount from "./components/addAccountForms/FormsBankAccount";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFormStore } from "@/store/useFormStore";
+import { storage } from "@/app/_layout";
 
 export default function AddAccountDetails() {
   const router = useRouter();
@@ -26,6 +27,8 @@ export default function AddAccountDetails() {
       setFormData({ category });
     }
   }, [category]);
+
+  const accounts = JSON.parse(storage.getString('accounts') || '[]');
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
