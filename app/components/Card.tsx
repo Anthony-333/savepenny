@@ -102,6 +102,11 @@ const Card = ({
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
+      // Don't allow swipe if there's only one card
+      if (accounts.length <= 1) {
+        return;
+      }
+
       const isSwipeRight = e.translationX > 0;
       direction.value = isSwipeRight ? 1 : -1;
 
@@ -115,34 +120,57 @@ const Card = ({
       }
     })
     .onEnd((e) => {
+      // Don't handle swipe end if there's only one card
+      if (accounts.length <= 1) {
+        translateX.value = withTiming(0);
+        return;
+      }
+
       if (currentIndex === index) {
         if (Math.abs(e.translationX) > 150 || Math.abs(e.velocityX) > 1000) {
           runOnJS(handleCardSwipe)();
-          const nextIndex = currentIndex === accounts.length - 1 ? 0 : currentIndex + 1;
+          
+          // Move current card to the end of the array
+          const updatedAccounts = [...accounts];
+          const [movedCard] = updatedAccounts.splice(currentIndex, 1);
+          updatedAccounts.push(movedCard);
+          runOnJS(setAccounts)(updatedAccounts);
+
+          // Update current index
+          const nextIndex = currentIndex === accounts.length - 1 ? 0 : currentIndex;
           runOnJS(setCurrentIndex)(nextIndex);
-          translateX.value = withTiming(width * direction.value);
-          animatedValue.value = withTiming(nextIndex);
+
+          // Animate the swipe
+          translateX.value = withTiming(width * direction.value, {
+            duration: 300,
+          }, () => {
+            translateX.value = 0;
+          });
+          
+          animatedValue.value = withTiming(nextIndex, {
+            duration: 300,
+          });
         } else {
-          translateX.value = withTiming(0, { duration: 500 });
-          animatedValue.value = withTiming(currentIndex, { duration: 500 });
+          // Reset position if swipe wasn't far enough
+          translateX.value = withTiming(0, { duration: 300 });
+          animatedValue.value = withTiming(currentIndex, { duration: 300 });
         }
       }
     });
 
   const animatedStyle = useAnimatedStyle(() => {
     const currentItem = index === currentIndex;
+    const isNext = index === (currentIndex + 1) % accounts.length;
+    const isPrevious = index === (currentIndex - 1 + accounts.length) % accounts.length;
 
-    const translateY = interpolate(
-      animatedValue.value,
-      [index - 1, index],
-      [15, 0]
-    );
+    let translateY = 0;
+    let scale = 1;
+    let opacity = 1;
 
-    const scale = interpolate(
-      animatedValue.value,
-      [index - 1, index],
-      [0.9, 1]
-    );
+    if (!currentItem) {
+      translateY = 15;
+      scale = 0.9;
+    }
 
     const rotateZ = interpolate(
       Math.abs(translateX.value),
@@ -150,22 +178,15 @@ const Card = ({
       [0, 20]
     );
 
-    const opacity = interpolate(
-      animatedValue.value + maxVisibleItems,
-      [index, index + 1],
-      [0, 1]
-    );
-
     return {
       transform: [
-        { translateY: currentItem ? 0 : translateY },
-        { scale: currentItem ? 1 : scale },
-        { translateX: translateX.value },
-        {
-          rotateZ: currentItem ? `${direction.value * rotateZ}deg` : "0deg",
-        },
+        { translateY },
+        { scale },
+        { translateX: currentItem ? translateX.value : 0 },
+        { rotateZ: currentItem ? `${direction.value * rotateZ}deg` : "0deg" },
       ],
-      opacity: index < currentIndex + maxVisibleItems ? 1 : opacity,
+      opacity,
+      zIndex: currentItem ? accounts.length : accounts.length - Math.abs(currentIndex - index),
     };
   });
 
