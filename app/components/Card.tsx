@@ -118,11 +118,10 @@ const Card = ({
       if (currentIndex === index) {
         if (Math.abs(e.translationX) > 150 || Math.abs(e.velocityX) > 1000) {
           runOnJS(handleCardSwipe)();
-          runOnJS(setCurrentIndex)(currentIndex + 1);
-          translateX.value = withTiming(width * direction.value, {}, () => {
-            runOnJS(setAccounts)([...accounts, accounts[currentIndex]]);
-          });
-          animatedValue.value = withTiming(currentIndex + 1);
+          const nextIndex = currentIndex === accounts.length - 1 ? 0 : currentIndex + 1;
+          runOnJS(setCurrentIndex)(nextIndex);
+          translateX.value = withTiming(width * direction.value);
+          animatedValue.value = withTiming(nextIndex);
         } else {
           translateX.value = withTiming(0, { duration: 500 });
           animatedValue.value = withTiming(currentIndex, { duration: 500 });
@@ -191,6 +190,8 @@ const Card = ({
         style={[
           {
             zIndex: dataLength - index,
+            borderRadius: 20,
+            overflow: 'hidden'
           },
           animatedStyle,
         ]}
@@ -203,6 +204,8 @@ const Card = ({
               width: "100%",
               height: "100%",
               zIndex: isFlipped ? 0 : 1,
+              borderRadius: 20,
+              overflow: 'hidden'
             },
             frontAnimatedStyle,
           ]}
@@ -211,7 +214,7 @@ const Card = ({
             colors={account.colors}
             start={{ x: account.sliderPosition[0] / 100, y: 0 }}
             end={{ x: account.sliderPosition[1] / 100, y: 0 }}
-            className="flex-col justify-between items-center w-full h-full rounded-2xl p-5"
+            className="flex-col justify-between items-center w-full h-full p-5"
           >
             <View className="flex-row items-center justify-between w-full">
               <View className="flex-row items-center gap-2">
@@ -277,6 +280,8 @@ const Card = ({
               width: "100%",
               height: "100%",
               zIndex: isFlipped ? 1 : 0,
+              borderRadius: 30,
+              overflow: 'hidden'
             },
             backAnimatedStyle,
           ]}
@@ -285,7 +290,7 @@ const Card = ({
             colors={account.colors}
             start={{ x: account.sliderPosition[0] / 100, y: 0 }}
             end={{ x: account.sliderPosition[1] / 100, y: 0 }}
-            className="flex-col justify-between items-center w-full h-full rounded-2xl p-5"
+            className="flex-col justify-between items-center w-full h-full p-5"
           >
             <View className="flex-row items-center justify-between w-full">
               <UiText className="text-white font-bold text-lg">Notes</UiText>
