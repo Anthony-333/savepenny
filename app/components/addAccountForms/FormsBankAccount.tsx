@@ -543,18 +543,6 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
           </View>
         </View>
 
-        {/* Add Save Button at the bottom */}
-        <View className="mt-6 mb-10">
-          <UiButton
-            title="Save Account"
-            onPress={handleSave}
-            className="bg-blue-600 py-4 rounded-2xl"
-            textClassName="text-white font-semibold text-lg"
-          >
-            Save Account
-          </UiButton>
-        </View>
-
         {/* Color Picker Bottom Sheet */}
         <BottomSheet
           ref={bottomSheetRef}

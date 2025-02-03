@@ -10,6 +10,7 @@ import FormsBankAccount from "./components/addAccountForms/FormsBankAccount";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFormStore } from "@/store/useFormStore";
 import { storage } from "@/app/_layout";
+import * as Haptics from 'expo-haptics';
 
 export default function AddAccountDetails() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function AddAccountDetails() {
   }>();
 
   // Get form data and submit function from Zustand store
-  const { submitForm, setFormData } = useFormStore();
+  const { formData, setFormData } = useFormStore();
 
   // Set category in form data when component mounts
   useEffect(() => {
@@ -28,7 +29,40 @@ export default function AddAccountDetails() {
     }
   }, [category]);
 
-  const accounts = JSON.parse(storage.getString('accounts') || '[]');
+  const handleSave = () => {
+    try {
+      // Generate a unique ID for the account
+      const accountId = Date.now().toString();
+      
+      // Create the account data object
+      const accountData = {
+        id: accountId,
+        type,
+        ...formData,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Get existing accounts or initialize empty array
+      const existingAccounts = storage.getString('accounts');
+      const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
+      
+      // Add new account to the array
+      accounts.push(accountData);
+      
+      // Save updated accounts array
+      storage.set('accounts', JSON.stringify(accounts));
+      
+      // Provide haptic feedback for success
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      // Navigate back to dashboard
+      router.push('/(dashboard)');
+    } catch (error) {
+      console.error('Error saving account:', error);
+      // Provide haptic feedback for error
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -48,7 +82,7 @@ export default function AddAccountDetails() {
             </UiText>
           </View>
           <Pressable
-            onPress={() => submitForm(type, category)}
+            onPress={handleSave}
             className="bg-[#3e9c35] px-5 py-2.5 rounded-lg ml-4"
           >
             <UiText className="text-white font-medium">Save</UiText>
