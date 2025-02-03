@@ -26,7 +26,7 @@ import { storage } from "@/app/_layout";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
-import * as Haptics from 'expo-haptics';
+import * as Haptics from "expo-haptics";
 
 interface SavedAccount {
   id: string;
@@ -52,42 +52,49 @@ const index = () => {
   const MAX_VISIBLE_ITEMS = 3;
 
   useEffect(() => {
-    const accounts = JSON.parse(storage.getString('accounts') || '[]');
+    const accounts = JSON.parse(storage.getString("accounts") || "[]");
     setSavedAccounts(accounts);
   }, []);
 
-  const handleDeleteCard = useCallback((accountId: string) => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete this account?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            // Provide haptic feedback
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-            
-            // Filter out the account to delete
-            const updatedAccounts = savedAccounts.filter(account => account.id !== accountId);
-            
-            // Update state and storage
-            setSavedAccounts(updatedAccounts);
-            storage.set('accounts', JSON.stringify(updatedAccounts));
+  const handleDeleteCard = useCallback(
+    (accountId: string) => {
+      Alert.alert(
+        "Delete Account",
+        "Are you sure you want to delete this account?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: () => {
+              // Provide haptic feedback
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning
+              );
 
-            // Reset current index if needed
-            if (currentIndex >= updatedAccounts.length) {
-              setCurrentIndex(Math.max(0, updatedAccounts.length - 1));
-            }
-          }
-        }
-      ]
-    );
-  }, [savedAccounts, currentIndex]);
+              // Filter out the account to delete
+              const updatedAccounts = savedAccounts.filter(
+                (account) => account.id !== accountId
+              );
+
+              // Update state and storage
+              setSavedAccounts(updatedAccounts);
+              storage.set("accounts", JSON.stringify(updatedAccounts));
+
+              // Reset current index if needed
+              if (currentIndex >= updatedAccounts.length) {
+                setCurrentIndex(Math.max(0, updatedAccounts.length - 1));
+              }
+            },
+          },
+        ]
+      );
+    },
+    [savedAccounts, currentIndex]
+  );
 
   return (
     <Uiview paddingTop={0} className="flex-1">
@@ -109,16 +116,19 @@ const index = () => {
             )}
           </View>
           <View className="flex-row gap-2">
-            {savedAccounts.length > 0 && currentIndex < savedAccounts.length && (
-              <TouchableOpacity 
-                onPress={() => handleDeleteCard(savedAccounts[currentIndex].id)}
-                className="bg-red-500 w-10 h-10 rounded-full items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <AntDesign name="delete" size={20} color="white" />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity 
+            {savedAccounts.length > 0 &&
+              currentIndex < savedAccounts.length && (
+                <TouchableOpacity
+                  onPress={() =>
+                    handleDeleteCard(savedAccounts[currentIndex].id)
+                  }
+                  className="bg-red-500 w-10 h-10 rounded-full items-center justify-center"
+                  activeOpacity={0.7}
+                >
+                  <AntDesign name="delete" size={20} color="white" />
+                </TouchableOpacity>
+              )}
+            <TouchableOpacity
               onPress={() => router.push("/addAccount")}
               className="bg-blue-600 w-10 h-10 rounded-full items-center justify-center"
               activeOpacity={0.7}
@@ -133,22 +143,26 @@ const index = () => {
             <EmptyWidget type="account" />
           ) : (
             savedAccounts.map((account, index) => {
-              if (index > currentIndex + MAX_VISIBLE_ITEMS || index < currentIndex) {
+              if (
+                index > currentIndex + MAX_VISIBLE_ITEMS ||
+                index < currentIndex
+              ) {
                 return null;
               }
               return (
-                <Card
-                  key={account.id}
-                  accounts={savedAccounts}
-                  setAccounts={setSavedAccounts}
-                  maxVisibleItems={MAX_VISIBLE_ITEMS}
-                  account={account}
-                  index={index}
-                  dataLength={savedAccounts.length}
-                  animatedValue={animatedValue}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                />
+                <View className="w-full">
+                  <Card
+                    accounts={savedAccounts}
+                    setAccounts={setSavedAccounts}
+                    maxVisibleItems={MAX_VISIBLE_ITEMS}
+                    account={account}
+                    index={index}
+                    dataLength={savedAccounts.length}
+                    animatedValue={animatedValue}
+                    currentIndex={currentIndex}
+                    setCurrentIndex={setCurrentIndex}
+                  />
+                </View>
               );
             })
           )}

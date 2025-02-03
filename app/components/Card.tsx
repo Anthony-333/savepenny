@@ -204,6 +204,17 @@ const Card = ({
     return name;
   };
 
+  const formatNumber = (num: string) => {
+    // Remove any non-digit characters except decimal point
+    const cleanNum = num.replace(/[^0-9.]/g, "");
+    // Split into whole and decimal parts
+    const parts = cleanNum.split(".");
+    // Add commas to whole number part
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // Return formatted number with up to 2 decimal places
+    return parts.length > 1 ? `${parts[0]}.${parts[1].slice(0, 2)}` : parts[0];
+  };
+
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
@@ -226,7 +237,8 @@ const Card = ({
               height: "100%",
               zIndex: isFlipped ? 0 : 1,
               borderRadius: 20,
-              overflow: 'hidden'
+              overflow: 'hidden',
+          
             },
             frontAnimatedStyle,
           ]}
@@ -255,7 +267,7 @@ const Card = ({
                   {account.currency}
                 </UiText>
                 <UiText className="text-white font-bold text-3xl">
-                  {account.balance || "0.00"}
+                  {account.balance ? formatNumber(account.balance) : "0.00"}
                 </UiText>
               </View>
               <UiText className="text-white/70 text-sm">
