@@ -218,12 +218,13 @@ const Card = ({
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
-        className="absolute w-full h-56"
+        className="absolute w-full h-56 flex-row justify-center items-center "
         style={[
           {
             zIndex: dataLength - index,
             borderRadius: 20,
-            overflow: 'hidden'
+            overflow: 'hidden',
+           
           },
           animatedStyle,
         ]}
@@ -233,7 +234,7 @@ const Card = ({
           style={[
             {
               position: "absolute",
-              width: "100%",
+              width: "95%",
               height: "100%",
               zIndex: isFlipped ? 0 : 1,
               borderRadius: 20,
@@ -248,6 +249,7 @@ const Card = ({
             start={{ x: account.sliderPosition[0] / 100, y: 0 }}
             end={{ x: account.sliderPosition[1] / 100, y: 0 }}
             className="flex-col justify-between items-center w-full h-full p-5"
+           
           >
             <View className="flex-row items-center justify-between w-full">
               <View className="flex-row items-center gap-2">

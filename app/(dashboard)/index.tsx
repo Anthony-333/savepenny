@@ -27,6 +27,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import CategoryScreens from "../components/CategoryScreens";
 
 interface SavedAccount {
   id: string;
@@ -101,12 +102,16 @@ const index = () => {
       <View style={{ zIndex: 1 }}>
         <HomeHeader />
       </View>
+
+      <View className="flex-row justify-between items-center mx-5">
+        <CategoryScreens />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        className="flex mb-20 mx-5"
+        className="flex mb-20 "
         stickyHeaderIndices={[0]}
       >
-        <View className="my-3 flex-row justify-between items-center">
+        <View className="my-3 flex-row justify-between items-center mx-5">
           <View className="flex-row items-center">
             <UiText className="font-bold text-2xl">Home</UiText>
             {savedAccounts.length > 0 && (
@@ -118,23 +123,25 @@ const index = () => {
           <View className="flex-row gap-2">
             {savedAccounts.length > 0 &&
               currentIndex < savedAccounts.length && (
-                <TouchableOpacity
-                  onPress={() =>
-                    handleDeleteCard(savedAccounts[currentIndex].id)
-                  }
-                  className="bg-red-500 w-10 h-10 rounded-full items-center justify-center"
-                  activeOpacity={0.7}
-                >
-                  <AntDesign name="delete" size={20} color="white" />
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleDeleteCard(savedAccounts[currentIndex].id)
+                    }
+                    className="bg-red-500 w-10 h-10 rounded-full items-center justify-center"
+                    activeOpacity={0.7}
+                  >
+                    <AntDesign name="delete" size={20} color="white" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => router.push("/addAccount")}
+                    className="bg-blue-600 w-10 h-10 rounded-full items-center justify-center"
+                    activeOpacity={0.7}
+                  >
+                    <AntDesign name="plus" size={24} color="white" />
+                  </TouchableOpacity>
+                </>
               )}
-            <TouchableOpacity
-              onPress={() => router.push("/addAccount")}
-              className="bg-blue-600 w-10 h-10 rounded-full items-center justify-center"
-              activeOpacity={0.7}
-            >
-              <AntDesign name="plus" size={24} color="white" />
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -150,7 +157,7 @@ const index = () => {
                 return null;
               }
               return (
-                <View className="w-full">
+                <View key={account.id} className="w-full">
                   <Card
                     accounts={savedAccounts}
                     setAccounts={setSavedAccounts}
