@@ -103,9 +103,7 @@ const index = () => {
         <HomeHeader />
       </View>
 
-      <View className="flex-row justify-between items-center mx-5">
-        <CategoryScreens />
-      </View>
+     
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="flex mb-20 "

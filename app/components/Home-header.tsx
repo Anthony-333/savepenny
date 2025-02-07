@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import UiText from "@/util/UiText";
+import CategoryScreens from "./CategoryScreens";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -32,24 +33,29 @@ const HomeHeader = () => {
   const insets = useSafeAreaInsets();
   return (
     <View
-      className="flex-row justify-between items-center bg-white px-5 pb-2"
-      style={{ paddingTop: insets.top }}
+      className="bg-white px-5 pb-2"
+      style={{ paddingTop: insets.top * 1.3 }}
     >
-      <View className="flex-row items-center gap-2">
+      <View className="flex-row justify-between items-center">
+        <View className="flex-row items-center gap-2">
+          <TouchableOpacity className="">
+            <UiText style={styles.initialsStyle}>{getInitials(name)}</UiText>
+          </TouchableOpacity>
 
-        <TouchableOpacity className="">
-          <UiText style={styles.initialsStyle}>{getInitials(name)}</UiText>
-        </TouchableOpacity>
-
-        <View>
-          <UiText className="font-bold text-gray-500">Welcome</UiText>
-          <UiText className="font-bold">{name}</UiText>
+          <View>
+            <UiText className="font-bold text-gray-500">Welcome</UiText>
+            <UiText className="font-bold">{name}</UiText>
+          </View>
         </View>
+
+        <TouchableOpacity>
+          <Feather name="bell" size={24} color="#222222" />
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity>
-        <Feather name="bell" size={24} color="#222222" />
-      </TouchableOpacity>
+      <View className="flex-row justify-between items-center mt-3 mb-1">
+        <CategoryScreens />
+      </View>
     </View>
   );
 };

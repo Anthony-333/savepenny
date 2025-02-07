@@ -33,7 +33,6 @@ export default function TabLayout() {
         name="wallet"
         options={{
           title: "Wallet",
-         
         }}
       />
       <Tabs.Screen
@@ -42,7 +41,12 @@ export default function TabLayout() {
           title: "Settings",
         }}
       />
-     
+      <Tabs.Screen
+        name="social"
+        options={{
+          title: "Social",
+        }}
+      />
     </Tabs>
   );
 }

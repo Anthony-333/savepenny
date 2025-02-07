@@ -20,7 +20,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const windowWidth = Dimensions.get("window").width;
 
-const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+const TabBar = (props: any) => {
+  const { state, descriptors, navigation } = props as BottomTabBarProps;
   const insets = useSafeAreaInsets();
   const [dimensions, setDimensions] = useState({ width: 20, height: 100 });
   const buttonWidth = dimensions.width / state.routes.length;
