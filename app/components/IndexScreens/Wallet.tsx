@@ -3,7 +3,7 @@ import React from "react";
 
 const Wallet = () => {
   return (
-    <View>
+    <View className="flex-1 ">
       <Text>Wallet</Text>
     </View>
   );

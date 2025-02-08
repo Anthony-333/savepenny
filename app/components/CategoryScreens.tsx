@@ -1,27 +1,24 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
+import React from "react";
 import UiText from "@/util/UiText";
+import useScreenStore from "@/app/store/useScreenStore";
 
 type RouteType = {
   id: number;
-  name: string;
-  route: string;
+  name: 'Home' | 'Analytics' | 'Wallet';
 };
 
 const categories: RouteType[] = [
-  { id: 1, name: "Home", route: "/" },
-  { id: 2, name: "Analytics", route: "/analytics" },
-  { id: 3, name: "Wallet", route: "/wallet" }
+  { id: 1, name: "Home" },
+  { id: 2, name: "Analytics" },
+  { id: 3, name: "Wallet" }
 ];
 
 const CategoryScreens = () => {
-  const router = useRouter();
-  const [activeCategory, setActiveCategory] = useState("Home");
+  const { activeScreen, setActiveScreen } = useScreenStore();
 
-  const handleCategoryPress = (category: string, route: string) => {
-    setActiveCategory(category);
-    router.push(route as any);
+  const handleCategoryPress = (screen: RouteType['name']) => {
+    setActiveScreen(screen);
   };
 
   return (
@@ -33,9 +30,9 @@ const CategoryScreens = () => {
       {categories.map((category) => (
         <TouchableOpacity
           key={category.id}
-          onPress={() => handleCategoryPress(category.name, category.route)}
+          onPress={() => handleCategoryPress(category.name)}
           className={`px-4 py-2 font-bold rounded-full mr-2 ${
-            activeCategory === category.name
+            activeScreen === category.name
               ? "bg-[#22c55e]"
               : ""
           }`}
@@ -43,7 +40,7 @@ const CategoryScreens = () => {
         >
           <UiText
             className={`${
-              activeCategory === category.name
+              activeScreen === category.name
                 ? "text-white font-semibold text-sm"
                 : "text-gray-300 text-sm"
             }`}
