@@ -33,7 +33,7 @@ const HomeHeader = () => {
   const insets = useSafeAreaInsets();
   return (
     <View
-      className="bg-white px-5 pb-2"
+      className="bg-white px-5 pb-3 border-b border-gray-200 shadow-lg"
       style={{ paddingTop: insets.top * 1.3 }}
     >
       <View className="flex-row justify-between items-center">
@@ -53,9 +53,9 @@ const HomeHeader = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex-row justify-between items-center mt-3 mb-1">
+      {/* <View className="flex-row justify-between items-center mt-3 mb-1">
         <CategoryScreens />
-      </View>
+      </View> */}
     </View>
   );
 };

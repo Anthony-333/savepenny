@@ -3,26 +3,25 @@ import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import UiText from "@/util/UiText";
 
-type RouteType = "/" | "/analytics" | "/wallet" | "/settings";
-
-const categories: Array<{
+type RouteType = {
   id: number;
   name: string;
-  route: RouteType;
-}> = [
+  route: string;
+};
+
+const categories: RouteType[] = [
   { id: 1, name: "Home", route: "/" },
   { id: 2, name: "Analytics", route: "/analytics" },
-  { id: 3, name: "Wallet", route: "/wallet" },
-  { id: 4, name: "Settings", route: "/settings" },
+  { id: 3, name: "Wallet", route: "/wallet" }
 ];
 
 const CategoryScreens = () => {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("Home");
 
-  const handleCategoryPress = (category: string, route: RouteType) => {
+  const handleCategoryPress = (category: string, route: string) => {
     setActiveCategory(category);
-    router.push(route);
+    router.push(route as any);
   };
 
   return (

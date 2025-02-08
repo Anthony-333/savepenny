@@ -17,34 +17,19 @@ import Animated, {
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import UiText from "@/util/UiText";
 import { LinearGradient } from "expo-linear-gradient";
+import { SavedAccount } from "@/app/store/useAccountStore";
 
-interface SavedAccount {
-  id: string;
-  type: string;
-  name: string;
-  balance: string;
-  notes: string;
-  bankId?: string;
-  bankDisplayName?: string;
-  colors: [string, string];
-  sliderPosition: [number, number];
-  lastFourDigits: string;
-  showLastFourDigits: boolean;
-  currency: string;
-  paymentNetwork?: "visa" | "mastercard";
-}
-
-type Props = {
+interface CardProps {
   accounts: SavedAccount[];
-  setAccounts: React.Dispatch<React.SetStateAction<SavedAccount[]>>;
+  setAccounts: (accounts: SavedAccount[]) => void;
   maxVisibleItems: number;
   account: SavedAccount;
   index: number;
   dataLength: number;
-  animatedValue: SharedValue<number>;
+  animatedValue: any;
   currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
-};
+  setCurrentIndex: (index: number) => void;
+}
 
 const Card = ({
   accounts,
@@ -56,7 +41,7 @@ const Card = ({
   animatedValue,
   currentIndex,
   setCurrentIndex,
-}: Props) => {
+}: CardProps) => {
   const { width } = useWindowDimensions();
   const translateX = useSharedValue(0);
   const direction = useSharedValue(0);

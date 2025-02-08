@@ -12,12 +12,6 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      <Tabs.Screen
-        name="analytics"
-        options={{
-          title: "Analytics",
-        }}
-      />
 
       <Tabs.Screen
         name="addnew"
@@ -29,18 +23,6 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="wallet"
-        options={{
-          title: "Wallet",
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-        }}
-      />
       <Tabs.Screen
         name="social"
         options={{
