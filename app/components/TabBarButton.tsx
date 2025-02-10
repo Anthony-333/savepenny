@@ -64,6 +64,7 @@ const TabBarButton = ({
         >
           {icon[routeName as keyof typeof icon]({
             color: color,
+            isFocused: isFocused,
           })}
      
         </View>

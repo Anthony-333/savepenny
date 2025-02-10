@@ -5,25 +5,25 @@ import useScreenStore from "@/app/store/useScreenStore";
 
 type RouteType = {
   id: number;
-  name: 'Home' | 'Analytics' | 'Wallet';
+  name: "Home" | "Analytics" | "Wallet";
 };
 
 const categories: RouteType[] = [
   { id: 1, name: "Home" },
   { id: 2, name: "Analytics" },
-  { id: 3, name: "Wallet" }
+  { id: 3, name: "Wallet" },
 ];
 
 const CategoryScreens = () => {
   const { activeScreen, setActiveScreen } = useScreenStore();
 
-  const handleCategoryPress = (screen: RouteType['name']) => {
+  const handleCategoryPress = (screen: RouteType["name"]) => {
     setActiveScreen(screen);
   };
 
   return (
-    <ScrollView 
-      horizontal 
+    <ScrollView
+      horizontal
       showsHorizontalScrollIndicator={false}
       className="flex-row gap-2 mt-2"
     >
@@ -32,9 +32,7 @@ const CategoryScreens = () => {
           key={category.id}
           onPress={() => handleCategoryPress(category.name)}
           className={`px-4 py-2 font-bold rounded-full mr-2 ${
-            activeScreen === category.name
-              ? "bg-[#22c55e]"
-              : ""
+            activeScreen === category.name ? "bg-[#22c55e]" : ""
           }`}
           activeOpacity={0.7}
         >
@@ -42,7 +40,7 @@ const CategoryScreens = () => {
             className={`${
               activeScreen === category.name
                 ? "text-white font-semibold text-sm"
-                : "text-gray-300 text-sm"
+                : "text-gray-500 text-sm"
             }`}
           >
             {category.name}

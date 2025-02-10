@@ -18,6 +18,8 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   const { savedAccounts, setSavedAccounts, currentIndex, setCurrentIndex } =
     useAccountStore();
 
+  console.log(savedAccounts);
+
   const handleDeleteCard = (accountId: string) => {
     Alert.alert(
       "Delete Account",
