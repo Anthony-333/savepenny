@@ -83,7 +83,10 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
         </View>
       </View>
 
-      <View className="flex items-center h-[200] mx-5" style={{ zIndex: 1 }}>
+      <View
+        className="flex items-center h-[200] mx-5 mb-5"
+        style={{ zIndex: 1 }}
+      >
         {savedAccounts.length === 0 ? (
           <EmptyWidget type="account" />
         ) : (
@@ -112,6 +115,17 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
           })
         )}
       </View>
+
+      {savedAccounts.length > 0 && (
+        <TouchableOpacity
+          onPress={() => router.push("/addAccount")}
+          className="mx-5 mb-3 border border-gray-300 py-2 rounded-lg items-center justify-center flex-row gap-1.5"
+          activeOpacity={0.7}
+        >
+          <AntDesign name="plus" size={14} color="#666" />
+          <UiText className="text-gray-600 text-sm">Add Account</UiText>
+        </TouchableOpacity>
+      )}
 
       <View className="mx-5">
         <EmptyWidget type="features" />
