@@ -219,7 +219,7 @@ const Card = ({
           style={[
             {
               position: "absolute",
-              width: "95%",
+              width: "100%",
               height: "100%",
               zIndex: isFlipped ? 0 : 1,
               borderRadius: 20,

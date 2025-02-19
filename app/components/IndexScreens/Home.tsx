@@ -83,7 +83,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
         </View>
       </View>
 
-      <View className="flex items-center h-[200] " style={{ zIndex: 1 }}>
+      <View className="flex items-center h-[200] mx-5" style={{ zIndex: 1 }}>
         {savedAccounts.length === 0 ? (
           <EmptyWidget type="account" />
         ) : (
@@ -95,7 +95,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
               return null;
             }
             return (
-              <View key={account.id} className="w-full">
+              <View key={account.id} className="w-full ">
                 <Card
                   accounts={savedAccounts}
                   setAccounts={setSavedAccounts}
@@ -113,7 +113,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
         )}
       </View>
 
-      <View className="">
+      <View className="mx-5">
         <EmptyWidget type="features" />
       </View>
     </ScrollView>
