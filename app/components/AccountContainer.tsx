@@ -7,13 +7,16 @@ import Card from "./Card";
 
 interface AccountContainerProps {
   accounts: any[];
-  setAccounts: (accounts: any[]) => void;
+  setAccounts?: (accounts: any[]) => void;
   currentIndex: number;
   setCurrentIndex: (index: number) => void;
-  animatedValue: any;
-  MAX_VISIBLE_ITEMS: number;
+  animatedValue?: any;
+  MAX_VISIBLE_ITEMS?: number;
   type: string;
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
+  addPath?: string;
+  renderItem?: (item: any) => React.ReactNode;
+  showControls?: boolean;
 }
 
 const AccountContainer = ({
@@ -22,38 +25,40 @@ const AccountContainer = ({
   currentIndex,
   setCurrentIndex,
   animatedValue,
-  MAX_VISIBLE_ITEMS,
+  MAX_VISIBLE_ITEMS = 3,
   type,
   onDelete,
+  addPath = "/addAccount",
+  renderItem,
+  showControls = true,
 }: AccountContainerProps) => {
   const router = useRouter();
 
   const handleAddItem = () => {
-    router.push({
-      pathname: "/addAccountDetails",
-      params: { type },
-    });
-  };
-
-  const handleAddAccount = () => {
-    router.push({
-      pathname: "/addAccount",
-    });
+    router.push(addPath as any);
   };
 
   return (
     <View className="mb-5">
-      <View className="my-3 flex-row justify-between items-center mx-5">
-        <View className="flex-row items-center">
-          {accounts.length > 0 && (
-            <UiText className="text-gray-500 ml-2">
-              ({currentIndex + 1}/{accounts.length})
-            </UiText>
-          )}
-        </View>
-        <View className="flex-row gap-2">
-          {accounts.length > 0 && currentIndex < accounts.length && (
-            <>
+      {/* Draggable Pill Handle */}
+      <TouchableOpacity 
+        className="w-full items-center mb-2 py-2"
+        activeOpacity={0.7}
+      >
+        <View className="w-10 h-1 bg-gray-300 rounded-full" />
+      </TouchableOpacity>
+
+      {showControls && (
+        <View className="my-3 flex-row justify-between items-center mx-5">
+          <View className="flex-row items-center">
+            {accounts.length > 0 && (
+              <UiText className="text-gray-500 ml-2">
+                ({currentIndex + 1}/{accounts.length})
+              </UiText>
+            )}
+          </View>
+          <View className="flex-row gap-2">
+            {accounts.length > 0 && currentIndex < accounts.length && onDelete && (
               <TouchableOpacity
                 onPress={() => onDelete(accounts[currentIndex].id)}
                 className="bg-red-500 w-7 h-7 rounded-full items-center justify-center"
@@ -61,57 +66,37 @@ const AccountContainer = ({
               >
                 <AntDesign name="delete" size={16} color="white" />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleAddItem}
-                className="bg-blue-600 w-7 h-7 rounded-full items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <AntDesign name="plus" size={16} color="white" />
-              </TouchableOpacity>
-            </>
-          )}
+            )}
+          </View>
         </View>
-      </View>
+      )}
 
-      <View
-        className="flex items-center h-[200] mx-5 mb-5"
-        style={{ zIndex: 1 }}
-      >
+      <View className="flex items-center h-[200] mx-5" style={{ zIndex: 1 }}>
         {accounts.map((account, index) => {
-          if (
-            index > currentIndex + MAX_VISIBLE_ITEMS ||
-            index < currentIndex
-          ) {
+          if (index > currentIndex + MAX_VISIBLE_ITEMS || index < currentIndex) {
             return null;
           }
           return (
             <View key={account.id} className="w-full">
-              <Card
-                accounts={accounts}
-                setAccounts={setAccounts}
-                maxVisibleItems={MAX_VISIBLE_ITEMS}
-                account={account}
-                index={index}
-                dataLength={accounts.length}
-                animatedValue={animatedValue}
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-              />
+              {renderItem ? (
+                renderItem(account)
+              ) : setAccounts ? (
+                <Card
+                  accounts={accounts}
+                  setAccounts={setAccounts}
+                  maxVisibleItems={MAX_VISIBLE_ITEMS}
+                  account={account}
+                  index={index}
+                  dataLength={accounts.length}
+                  animatedValue={animatedValue}
+                  currentIndex={currentIndex}
+                  setCurrentIndex={setCurrentIndex}
+                />
+              ) : null}
             </View>
           );
         })}
       </View>
-
-      {accounts.length > 0 && (
-        <TouchableOpacity
-          onPress={handleAddAccount}
-          className="mx-5 mb-3 border border-gray-300 py-2 rounded-lg items-center justify-center flex-row gap-1.5"
-          activeOpacity={0.7}
-        >
-          <AntDesign name="plus" size={14} color="#666" />
-          <UiText className="text-gray-600 text-sm">Add {type}</UiText>
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
