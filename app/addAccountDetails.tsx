@@ -7,10 +7,11 @@ import { useState, useEffect } from "react";
 import UiText from "@/util/UiText";
 
 import FormsBankAccount from "./components/addAccountForms/FormsBankAccount";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFormStore } from "@/store/useFormStore";
 import { storage } from "@/app/_layout";
-import * as Haptics from 'expo-haptics';
+import * as Haptics from "expo-haptics";
+import GoalsAccount from "./components/addAccountForms/GoalsAccount";
 
 export default function AddAccountDetails() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function AddAccountDetails() {
     try {
       // Generate a unique ID for the account
       const accountId = Date.now().toString();
-      
+
       // Create the account data object
       const accountData = {
         id: accountId,
@@ -43,22 +44,22 @@ export default function AddAccountDetails() {
       };
 
       // Get existing accounts or initialize empty array
-      const existingAccounts = storage.getString('accounts');
+      const existingAccounts = storage.getString("accounts");
       const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
-      
+
       // Add new account to the array
       accounts.push(accountData);
-      
+
       // Save updated accounts array
-      storage.set('accounts', JSON.stringify(accounts));
-      
+      storage.set("accounts", JSON.stringify(accounts));
+
       // Provide haptic feedback for success
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      
+
       // Navigate back to dashboard
-      router.push('/(dashboard)');
+      router.push("/(dashboard)");
     } catch (error) {
-      console.error('Error saving account:', error);
+      console.error("Error saving account:", error);
       // Provide haptic feedback for error
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
@@ -95,11 +96,9 @@ export default function AddAccountDetails() {
           showsVerticalScrollIndicator={false}
           contentContainerClassName=""
         >
-          {type === "Bank Account" && (
-            <FormsBankAccount
-              type={type}
-            />
-          )}
+          {type === "Bank Account" && <FormsBankAccount type={type} />}
+
+          {type === "Goals" && <GoalsAccount />}
         </ScrollView>
       </Uiview>
     </GestureHandlerRootView>

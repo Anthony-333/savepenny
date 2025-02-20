@@ -56,11 +56,14 @@ const index = () => {
 
       if (
         newTranslateX <= 0 &&
-        newTranslateX >= -(screens.length - 1) * width
+        newTranslateX >= -(screens.length - 1) * width &&
+        Math.abs(e.velocityY) < Math.abs(e.velocityX) // Only handle horizontal swipes
       ) {
         translateX.value = newTranslateX;
       }
     })
+    .activeOffsetX([-10, 10]) // Start gesture only after 10px horizontal movement
+    .failOffsetY([-5, 5]) // Fail gesture if vertical movement exceeds 5px
     .onEnd((e) => {
       const currentIndex = screens.indexOf(activeScreen);
       const swipePercentage = Math.abs(e.translationX / width);
@@ -119,7 +122,7 @@ const index = () => {
           <View style={{ width }}>
             <Analytics />
           </View>
-          <View style={{ width }} >
+          <View style={{ width }}>
             <Wallet />
           </View>
         </Animated.View>
