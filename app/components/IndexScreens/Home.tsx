@@ -1,12 +1,12 @@
-import { View, TouchableOpacity, Alert, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import React from "react";
-import { useRouter } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
-import UiText from "@/util/UiText";
-import EmptyWidget from "../EmptyWidget";
-import Card from "../Card";
+import { Alert } from "react-native";
 import * as Haptics from "expo-haptics";
+import EmptyWidget from "../EmptyWidget";
+import AccountContainer from "../AccountContainer";
+import TransactionContainer from "../TransactionContainer";
 import useAccountStore from "@/app/store/useAccountStore";
+import useTransactionStore from "@/app/store/useTransactionStore";
 
 interface HomeScreenProps {
   animatedValue: any;
@@ -14,11 +14,9 @@ interface HomeScreenProps {
 }
 
 const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
-  const router = useRouter();
   const { savedAccounts, setSavedAccounts, currentIndex, setCurrentIndex } =
     useAccountStore();
-
-  console.log(savedAccounts);
+  const { transactions } = useTransactionStore();
 
   const handleDeleteCard = (accountId: string) => {
     Alert.alert(
@@ -51,83 +49,26 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       className="flex mb-20"
-      stickyHeaderIndices={[0]}
     >
-      <View className="my-3 flex-row justify-between items-center mx-5">
-        <View className="flex-row items-center">
-          {savedAccounts.length > 0 && (
-            <UiText className="text-gray-500 ml-2">
-              ({currentIndex + 1}/{savedAccounts.length})
-            </UiText>
-          )}
-        </View>
-        <View className="flex-row gap-2">
-          {savedAccounts.length > 0 && currentIndex < savedAccounts.length && (
-            <>
-              <TouchableOpacity
-                onPress={() => handleDeleteCard(savedAccounts[currentIndex].id)}
-                className="bg-red-500 w-7 h-7 rounded-full items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <AntDesign name="delete" size={16} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => router.push("/addAccount")}
-                className="bg-blue-600 w-7 h-7 rounded-full items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <AntDesign name="plus" size={16} color="white" />
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-      </View>
-
-      <View
-        className="flex items-center h-[200] mx-5 mb-5"
-        style={{ zIndex: 1 }}
-      >
-        {savedAccounts.length === 0 ? (
+      {savedAccounts.length === 0 ? (
+        <View className="mx-5">
           <EmptyWidget type="account" />
-        ) : (
-          savedAccounts.map((account, index) => {
-            if (
-              index > currentIndex + MAX_VISIBLE_ITEMS ||
-              index < currentIndex
-            ) {
-              return null;
-            }
-            return (
-              <View key={account.id} className="w-full ">
-                <Card
-                  accounts={savedAccounts}
-                  setAccounts={setSavedAccounts}
-                  maxVisibleItems={MAX_VISIBLE_ITEMS}
-                  account={account}
-                  index={index}
-                  dataLength={savedAccounts.length}
-                  animatedValue={animatedValue}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                />
-              </View>
-            );
-          })
-        )}
-      </View>
-
-      {savedAccounts.length > 0 && (
-        <TouchableOpacity
-          onPress={() => router.push("/addAccount")}
-          className="mx-5 mb-3 border border-gray-300 py-2 rounded-lg items-center justify-center flex-row gap-1.5"
-          activeOpacity={0.7}
-        >
-          <AntDesign name="plus" size={14} color="#666" />
-          <UiText className="text-gray-600 text-sm">Add Account</UiText>
-        </TouchableOpacity>
+        </View>
+      ) : (
+        <AccountContainer
+          accounts={savedAccounts}
+          setAccounts={setSavedAccounts}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+          animatedValue={animatedValue}
+          MAX_VISIBLE_ITEMS={MAX_VISIBLE_ITEMS}
+          type="Bank Account"
+          onDelete={handleDeleteCard}
+        />
       )}
 
       <View className="mx-5">
+        <TransactionContainer transactions={transactions} />
         <EmptyWidget type="features" />
       </View>
     </ScrollView>

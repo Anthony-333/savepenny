@@ -1,12 +1,12 @@
 import { View, Text, Pressable, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Uiview from "@/util/Uiview";
 
 type CategoryTile = {
   name: string;
   icon: JSX.Element;
-  route: "/addAccount";
+  route: Href;
 };
 
 type Category = {
@@ -17,13 +17,20 @@ type Category = {
 export default function AddFeatures() {
   const router = useRouter();
 
-  const categories: Category[] = [
+  const categories: {
+    title: string;
+    items: {
+      name: string;
+      icon: JSX.Element;
+      route: "/addAccount" | "/addAccountDetails" | "/addTransaction";
+    }[];
+  }[] = [
     {
       title: "Money Management",
       items: [
         {
           name: "Transaction",
-          route: "/addAccount",
+          route: "/addTransaction",
           icon: <MaterialCommunityIcons name="cash-multiple" size={24} color="#4B5563" />,
         },
         {
@@ -80,7 +87,7 @@ export default function AddFeatures() {
               {category.items.map((item, itemIndex) => (
                 <Pressable
                   key={itemIndex}
-                  onPress={() => router.push(item.route)}
+                  onPress={() => router.push(item.route as any)}
                   className="w-[calc(33.33%-8px)] bg-gray-50 rounded-xl p-4 items-center"
                 >
                   {item.icon}
