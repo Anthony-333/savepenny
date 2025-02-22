@@ -19,6 +19,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Card from "../Card";
 
 interface HomeScreenProps {
   animatedValue: any;
@@ -36,7 +37,10 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   // Shared values for drag animation
   const bankAccountY = useSharedValue(0);
   const goalsY = useSharedValue(0);
-  const [sections, setSections] = useState<Array<'bank' | 'goals'>>(['bank', 'goals']);
+  const [sections, setSections] = useState<Array<"bank" | "goals">>([
+    "bank",
+    "goals",
+  ]);
 
   const bankAccountStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: bankAccountY.value }],
@@ -56,7 +60,9 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   };
 
   const handleSwapSections = () => {
-    setSections(prev => prev[0] === 'bank' ? ['goals', 'bank'] : ['bank', 'goals']);
+    setSections((prev) =>
+      prev[0] === "bank" ? ["goals", "bank"] : ["bank", "goals"]
+    );
   };
 
   const bankAccountGesture = Gesture.Pan()
@@ -100,7 +106,8 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
     .hitSlop({ top: -10, bottom: -10, left: -10, right: -10 });
 
   useEffect(() => {
-    loadGoals();
+    console.log("Bank Accounts:", savedAccounts);
+    console.log("Goals:", goals);
   }, []);
 
   const handleDeleteCard = (accountId: string) => {
@@ -131,75 +138,131 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   };
 
   const renderGoalCard = (goal: any) => (
-    <View className="bg-blue-600 p-5 rounded-xl w-full">
-      <View className="flex-row items-center justify-between mb-3">
-        <View className="flex-row items-center gap-2">
-          <MaterialCommunityIcons name="flag-variant" size={24} color="white" />
-          <UiText className="text-white text-lg font-semibold">
-            {goal.name}
+    <View className="bg-blue-600 rounded-xl w-full">
+      <View className="p-5">
+        <View className="flex-row items-center justify-between mb-3">
+          <View className="flex-row items-center gap-2">
+            <MaterialCommunityIcons
+              name="flag-variant"
+              size={24}
+              color="white"
+            />
+            <UiText className="text-white text-lg font-semibold">
+              {goal.name}
+            </UiText>
+          </View>
+          <UiText className="text-white font-medium">
+            ${goal.currentAmount?.toLocaleString()} / $
+            {goal.targetAmount.toLocaleString()}
           </UiText>
         </View>
-        <UiText className="text-white font-medium">
-          ${goal.currentAmount?.toLocaleString()} / $
-          {goal.targetAmount.toLocaleString()}
+        <UiText className="text-white/80" numberOfLines={2}>
+          {goal.description}
         </UiText>
-      </View>
-      <UiText className="text-white/80" numberOfLines={2}>
-        {goal.description}
-      </UiText>
 
-      <View className="h-2 bg-white/20 rounded-full mt-4 overflow-hidden">
-        <View
-          className="h-full bg-white"
-          style={{
-            width: `${Math.min(100, ((goal.currentAmount || 0) / goal.targetAmount) * 100)}%`,
-          }}
-        />
+        <View className="h-2 bg-white/20 rounded-full mt-4 overflow-hidden">
+          <View
+            className="h-full bg-white"
+            style={{
+              width: `${Math.min(
+                100,
+                ((goal.currentAmount || 0) / goal.targetAmount) * 100
+              )}%`,
+            }}
+          />
+        </View>
       </View>
     </View>
   );
 
   const components = {
-    bank: savedAccounts.length === 0 ? (
-      <View className="mx-5">
-        <EmptyWidget type="account" />
-      </View>
-    ) : (
+    bank: savedAccounts.length > 0 ? (
       <GestureDetector gesture={bankAccountGesture}>
         <Animated.View style={bankAccountStyle}>
           <AccountContainer
             accounts={savedAccounts}
-            setAccounts={setSavedAccounts}
             currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-            animatedValue={animatedValue}
-            MAX_VISIBLE_ITEMS={MAX_VISIBLE_ITEMS}
             type="Bank Account"
             onDelete={handleDeleteCard}
-            addPath="/addAccountDetails"
-          />
+            isDraggable={goals.length > 0}
+          >
+            {savedAccounts.map((account, index) => {
+              if (index > currentIndex + MAX_VISIBLE_ITEMS || index < currentIndex) {
+                return null;
+              }
+              const offset = 20 * (index - currentIndex);
+              return (
+                <View
+                  key={account.id}
+                  className="w-full absolute"
+                  style={{
+                    top: offset,
+                    zIndex: savedAccounts.length - (index - currentIndex),
+                  }}
+                >
+                  <Card
+                    accounts={savedAccounts}
+                    setAccounts={setSavedAccounts}
+                    maxVisibleItems={MAX_VISIBLE_ITEMS}
+                    account={account}
+                    index={index}
+                    dataLength={savedAccounts.length}
+                    animatedValue={animatedValue}
+                    currentIndex={currentIndex}
+                    setCurrentIndex={setCurrentIndex}
+                  />
+                </View>
+              );
+            })}
+          </AccountContainer>
         </Animated.View>
       </GestureDetector>
-    ),
-    goals: goals.length > 0 && (
+    ) : null,
+    goals: goals.length > 0 ? (
       <GestureDetector gesture={goalsGesture}>
         <Animated.View style={goalsStyle}>
           <AccountContainer
             accounts={goals}
             currentIndex={goalIndex}
-            setCurrentIndex={setGoalIndex}
             type="Goal"
-            addPath="/addAccount"
-            renderItem={renderGoalCard}
-            showControls={false}
-          />
+            isDraggable={savedAccounts.length > 0}
+          >
+            {goals.map((goal, index) => {
+              if (index !== goalIndex && index !== goalIndex + 1) {
+                return null;
+              }
+              const offset = index === goalIndex ? 0 : 20;
+              return (
+                <View
+                  key={goal.id}
+                  className="w-full absolute"
+                  style={{
+                    top: offset,
+                    zIndex: goals.length - (index - goalIndex),
+                  }}
+                >
+                  {renderGoalCard(goal)}
+                </View>
+              );
+            })}
+          </AccountContainer>
         </Animated.View>
       </GestureDetector>
-    ),
+    ) : null,
   } as const;
 
   const renderSections = () => {
     if (!sections) return null;
+
+    // Show EmptyWidget only when both bank accounts and goals are empty
+    if (savedAccounts.length === 0 && goals.length === 0) {
+      return (
+        <View className="mx-5">
+          <EmptyWidget type="account" />
+        </View>
+      );
+    }
+
     return sections.map(section => components[section]);
   };
 
@@ -218,7 +281,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
 
       <View className="mx-5 pb-20">
         <TouchableOpacity
-          onPress={() => router.push("/addFeatures")}
+          onPress={() => router.push("/addAccount")}
           className="border border-gray-300 py-2 rounded-lg items-center justify-center flex-row gap-1.5 mb-5"
           activeOpacity={0.7}
         >

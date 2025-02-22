@@ -153,7 +153,7 @@ const Card = ({
     let opacity = 1;
 
     if (!currentItem) {
-      translateY = 15;
+      translateY = 0;
       scale = 0.9;
     }
 

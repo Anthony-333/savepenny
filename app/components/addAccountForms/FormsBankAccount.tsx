@@ -151,13 +151,16 @@ const FormsBankAccount = ({ type }: FormsBankAccountProps) => {
     try {
       // Generate a unique ID for the account
       const accountId = Date.now().toString();
+      const timestamp = new Date();
       
       // Create the account data object
       const accountData = {
         id: accountId,
         type,
         ...formData,
-        createdAt: new Date().toISOString(),
+        createdAt: timestamp.toISOString(),
+        lastModified: timestamp.toISOString(),
+        timestamp: timestamp.getTime(), // Unix timestamp in milliseconds
       };
 
       // Get existing accounts or initialize empty array
