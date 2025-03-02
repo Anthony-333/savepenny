@@ -34,10 +34,10 @@ const AccountContainer = ({
     <View className="">
       <View className="my-3 flex-row justify-between items-center mx-5">
         {/* Left: Item Counter */}
-        <View className="flex-row items-center">
+        <View className="flex-row items-center w-16">
           {accounts.length > 0 && (
             <UiText className="text-gray-500">
-              ({currentIndex + 1}/{accounts.length})
+              {currentIndex + 1}/{accounts.length}
             </UiText>
           )}
         </View>
@@ -48,14 +48,14 @@ const AccountContainer = ({
             className="items-center py-2"
             activeOpacity={0.7}
           >
-            <View className="w-10 h-1 bg-gray-300 rounded-full" />
+            <View className="w-10 h-2 bg-gray-300 rounded-full" />
           </TouchableOpacity>
         ) : (
           <View className="flex-1" />
         )}
 
         {/* Right: Action Buttons */}
-        <View className="flex-row gap-2">
+        <View className="flex-row gap-2 w-16 justify-end">
           {accounts.length > 0 && currentIndex < accounts.length && onDelete && (
             <TouchableOpacity
               onPress={() => onDelete(accounts[currentIndex].id)}
@@ -79,7 +79,7 @@ const AccountContainer = ({
         className="items-center px-5 w-full " 
         style={{ 
           position: 'relative',
-          minHeight: type === "Goal" ? 140 : 220,
+          minHeight: type === "Goal" ? 140 : 205,
         }}
       >
         {children}

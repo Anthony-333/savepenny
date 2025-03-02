@@ -30,7 +30,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   const { savedAccounts, setSavedAccounts, currentIndex, setCurrentIndex } =
     useAccountStore();
   const { transactions } = useTransactionStore();
-  const { goals, loadGoals } = useGoalsStore();
+  const { goals, loadGoals, deleteGoal } = useGoalsStore();
   const [goalIndex, setGoalIndex] = useState(0);
   const router = useRouter();
 
@@ -108,6 +108,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
   useEffect(() => {
     console.log("Bank Accounts:", savedAccounts);
     console.log("Goals:", goals);
+    loadGoals();
   }, []);
 
   const handleDeleteCard = (accountId: string) => {
@@ -130,6 +131,30 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
             setSavedAccounts(updatedAccounts);
             if (currentIndex >= updatedAccounts.length) {
               setCurrentIndex(Math.max(0, updatedAccounts.length - 1));
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteGoal = (goalId: string) => {
+    Alert.alert(
+      "Delete Goal",
+      "Are you sure you want to delete this goal?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            deleteGoal(goalId);
+            if (goalIndex >= goals.length - 1) {
+              setGoalIndex(Math.max(0, goals.length - 2));
             }
           },
         },
@@ -180,7 +205,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
       <GestureDetector gesture={bankAccountGesture}>
         <Animated.View style={bankAccountStyle}>
           <AccountContainer
-            accounts={savedAccounts}
+            accounts={savedAccounts.filter((_, i) => i >= currentIndex && i <= currentIndex + MAX_VISIBLE_ITEMS)}
             currentIndex={currentIndex}
             type="Bank Account"
             onDelete={handleDeleteCard}
@@ -225,6 +250,7 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
             accounts={goals}
             currentIndex={goalIndex}
             type="Goal"
+            onDelete={handleDeleteGoal}
             isDraggable={savedAccounts.length > 0}
           >
             {goals.map((goal, index) => {
@@ -263,7 +289,11 @@ const HomeScreen = ({ animatedValue, MAX_VISIBLE_ITEMS }: HomeScreenProps) => {
       );
     }
 
-    return sections.map(section => components[section]);
+    return sections.map((section, index) => (
+      <View key={`section-${section}-${index}`}>
+        {components[section]}
+      </View>
+    ));
   };
 
   return (
